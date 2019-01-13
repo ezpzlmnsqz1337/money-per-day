@@ -1,6 +1,6 @@
 // Initialize Firebase
 export const config = {
-  apiKey: 'AIzaSyBquJ8PawDWLNMi7u0Y9rhANoDrkxMirew',
+  apiKey: '',
   authDomain: 'money-per-day.firebaseapp.com',
   databaseURL: 'https://money-per-day.firebaseio.com',
   projectId: 'money-per-day',
