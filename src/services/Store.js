@@ -1,7 +1,13 @@
 export const store = {
   debug: true,
   state: {
-    user: null
+    user: null,
+    settings: {
+      salaryDay: 1,
+      salary: 0,
+      fixedExpenses: 0,
+      currency: '€'
+    }
   },
   setUser (user) {
     console.log(user)
