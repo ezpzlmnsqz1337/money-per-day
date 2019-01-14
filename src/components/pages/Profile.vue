@@ -33,15 +33,13 @@ export default {
   name: 'profile',
   data () {
     return {
-      user: firebase.auth().currentUser,
+      user: store.user,
       languages: Object.keys(languages).map(lang => lang.toUpperCase())
     }
   },
   computed: {
     language: {
       get: function () {
-        console.log(languages)
-        console.log(this.user)
         return store.state.settings.language
       },
       set: function (newVal) {

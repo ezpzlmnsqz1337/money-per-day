@@ -16,7 +16,7 @@ Vue.use(firebase)
 
 router.beforeEach((to, from, next) => {
   if (to.path !== '/login') {
-    if (firebase.auth().currentUser) {
+    if (store.user) {
       console.log('There is a token, resume. (' + to.path + ')')
       next()
     } else {
@@ -33,21 +33,25 @@ router.beforeEach((to, from, next) => {
 new Vue({
   el: '#app',
   router,
-  created () {
+  created: function () {
     firebase.initializeApp(config)
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        store.createOrSetUser()
-        this.$router.push('/home')
-      } else {
-        this.$router.push('/login')
-      }
-    })
+    this.authenticate()
   },
   data () {
     return {}
   },
-  methods: {},
+  methods: {
+    authenticate () {
+      firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+          store.createOrSetUser()
+          this.$router.push('/home')
+        } else {
+          this.$router.push('/login')
+        }
+      })
+    }
+  },
   components: { App },
   template: '<App/>'
 })

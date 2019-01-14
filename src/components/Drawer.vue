@@ -17,7 +17,7 @@
           <v-list-tile-title>{{ item.title }}</v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
-      <v-list-tile v-if="state.user" @click="signOut()">
+      <v-list-tile v-if="user" @click="signOut()">
         <v-list-tile-action>
           <v-icon>exit_to_app</v-icon>
         </v-list-tile-action>
@@ -40,7 +40,8 @@ export default {
   },
   data () {
     return {
-      state: store.state,
+      firebase: firebase,
+      user: store.user,
       title: 'Money per day',
       items: [
         {

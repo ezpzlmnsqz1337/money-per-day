@@ -3,8 +3,8 @@ import firebase from 'firebase'
 class Store {
   constructor () {
     this.debug = true
+    this.user = null
     this.state = {
-      user: null,
       settings: {
         salaryDay: 1,
         salary: 0,
@@ -19,7 +19,7 @@ class Store {
     this.state.user = user
   }
 
-  createOrSetUser () {
+  async createOrSetUser () {
     const user = firebase.auth().currentUser
 
     const userRef = firebase.database().ref('users/' + user.uid)
@@ -27,7 +27,7 @@ class Store {
       const userData = {
         name: user.displayName,
         email: user.email,
-        photoUrl: user.photoURL
+        photoURL: user.photoURL
       }
 
       if (!userSnapshot.exists()) {
@@ -43,9 +43,14 @@ class Store {
 
     const storeRef = firebase.database().ref('users/' + user.uid + '/state')
     storeRef.on('value', storeSnapshot => {
-      console.log(storeSnapshot.val())
       if (storeSnapshot.exists()) this.state = { ...this.state, ...storeSnapshot.val() }
     })
+
+    this.user = {
+      name: user.displayName,
+      email: user.email,
+      photoURL: user.photoURL
+    }
   }
 }
 

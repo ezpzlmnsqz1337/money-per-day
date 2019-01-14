@@ -60,7 +60,7 @@ export default {
   },
   data: function () {
     return {
-      user: firebase.auth().currentUser,
+      user: store.user,
       days: [],
       currencies: Object.keys(currencies)
     }

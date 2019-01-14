@@ -17,14 +17,19 @@
 </template>
 
 <script>
-import firebase from 'firebase'
+import store from '../services/Store'
 
 export default {
   name: 'topbar',
   data () {
     return {
-      user: firebase.auth().currentUser,
       text: 'Home'
+    }
+  },
+  computed: {
+    user () {
+      console.log('user: ', store)
+      return store.user
     }
   },
   methods: {
