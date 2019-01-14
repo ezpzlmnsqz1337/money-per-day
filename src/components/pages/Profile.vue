@@ -1,48 +1,53 @@
 <template>
-  <v-layout row>
-    <v-flex xs12 sm6 offset-sm3>
-      <v-card>
-        <v-toolbar color="cyan" dark>
-          <v-toolbar-side-icon></v-toolbar-side-icon>
-          <v-toolbar-title>Inbox</v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-btn icon>
-            <v-icon>search</v-icon>
-          </v-btn>
-        </v-toolbar>
-        <v-list two-line>
-          <template v-for="(item, index) in items">
-            <v-subheader v-if="item.header" :key="item.header">{{ item.header }}</v-subheader>
-            <v-divider v-else-if="item.divider" :inset="item.inset" :key="index"></v-divider>
-            <v-list-tile avatar v-else :key="item.title" @click="itemClick">
-              <v-list-tile-avatar>
-                <img :src="item.avatar">
-              </v-list-tile-avatar>
-              <v-list-tile-content>
-                <v-list-tile-title v-html="item.title"></v-list-tile-title>
-                <v-list-tile-sub-title v-html="item.subtitle"></v-list-tile-sub-title>
-              </v-list-tile-content>
-            </v-list-tile>
-          </template>
-        </v-list>
-      </v-card>
-    </v-flex>
+  <v-layout justify-center>
+    <div>
+      <div class="__header">
+        <v-avatar size="16rem">
+          <img v-bind:src="user.photoURL" alt="user icon">
+        </v-avatar>
+        <h2>{{ user.displayName }}</h2>
+      </div>
+      <div class="__content">
+        <div class="label">Email:
+          <span>{{ user.email }}</span>
+        </div>
+        <v-flex xs6>
+          <v-subheader>Language:</v-subheader>
+        </v-flex>
+        <v-flex xs6>
+          <v-select
+            :items="languages"
+            v-model="language" />
+        </v-flex>
+      </div>
+    </div>
   </v-layout>
 </template>
 
 <script>
+import firebase from 'firebase'
+import { languages } from 'countries-list'
+import store from '../../services/Store'
+
 export default {
   name: 'profile',
   data () {
     return {
-      items: [
-        { header: 'Today' },
-        { avatar: '/static/doc-images/lists/1.jpg', title: 'Brunch this weekend?', subtitle: "<span class='text--primary'>Ali Connors</span> &mdash; I'll be in your neighborhood doing errands this weekend. Do you want to hang out?" },
-        { divider: true, inset: true },
-        { avatar: '/static/doc-images/lists/2.jpg', title: 'Summer BBQ <span class="grey--text text--lighten-1">4</span>', subtitle: "<span class='text--primary'>to Alex, Scott, Jennifer</span> &mdash; Wish I could come, but I'm out of town this weekend." },
-        { divider: true, inset: true },
-        { avatar: '/static/doc-images/lists/3.jpg', title: 'Oui oui', subtitle: "<span class='text--primary'>Sandra Adams</span> &mdash; Do you have Paris recommendations? Have you ever been?" }
-      ]
+      user: firebase.auth().currentUser,
+      languages: Object.keys(languages).map(lang => lang.toUpperCase())
+    }
+  },
+  computed: {
+    language: {
+      get: function () {
+        console.log(languages)
+        console.log(this.user)
+        return store.state.settings.language
+      },
+      set: function (newVal) {
+        store.state.settings.language = newVal
+        firebase.database().ref('users/' + this.user.uid).update({ state: store.state })
+      }
     }
   },
   methods: {

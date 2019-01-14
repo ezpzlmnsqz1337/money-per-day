@@ -9,13 +9,14 @@ class Store {
         salaryDay: 1,
         salary: 0,
         fixedExpenses: 0,
-        currency: '€'
+        currency: '€',
+        language: 'Czech'
       }
     }
   }
 
   setUser (user) {
-    this.state.user = user.uid
+    this.state.user = user
   }
 
   createOrSetUser () {

@@ -17,7 +17,7 @@
           </v-flex>
           <v-flex xs6>
             <v-text-field
-              mask="## ###"
+              type="number"
               v-model="salary" />
           </v-flex>
           <v-flex xs6>
@@ -25,8 +25,18 @@
           </v-flex>
           <v-flex xs6>
             <v-text-field
-              mask="## ###"
+              text-right
+              type="number"
               v-model="fixedExpenses" />
+          </v-flex>
+
+          <v-flex xs6>
+            <v-subheader>Currency:</v-subheader>
+          </v-flex>
+          <v-flex xs6>
+            <v-select
+              :items="currencies"
+              v-model="currency" />
           </v-flex>
         </v-layout>
       </v-container>
@@ -35,6 +45,7 @@
 
 <script>
 import store from '../../services/Store'
+import { currencies } from '../../assets/currencies'
 
 import firebase from 'firebase'
 
@@ -50,25 +61,23 @@ export default {
   data: function () {
     return {
       user: firebase.auth().currentUser,
-      currency: store.state.settings.currency,
-      days: []
+      days: [],
+      currencies: Object.keys(currencies)
     }
   },
   computed: {
     salaryDay: {
       get: function () {
-        console.log(store)
-        return store.state.settings.salaryDay
+        return parseInt(store.state.settings.salaryDay)
       },
       set: function (newVal) {
         store.state.settings.salaryDay = newVal
-        console.log(store)
         firebase.database().ref('users/' + this.user.uid).update({ state: store.state })
       }
     },
     salary: {
       get: function () {
-        return store.state.settings.salary
+        return parseInt(store.state.settings.salary)
       },
       set: function (newVal) {
         store.state.settings.salary = newVal
@@ -77,10 +86,19 @@ export default {
     },
     fixedExpenses: {
       get: function () {
-        return store.state.settings.fixedExpenses
+        return parseInt(store.state.settings.fixedExpenses)
       },
       set: function (newVal) {
         store.state.settings.fixedExpenses = newVal
+        firebase.database().ref('users/' + this.user.uid).update({ state: store.state })
+      }
+    },
+    currency: {
+      get: function () {
+        return store.state.settings.currency
+      },
+      set: function (newVal) {
+        store.state.settings.currency = newVal
         firebase.database().ref('users/' + this.user.uid).update({ state: store.state })
       }
     }
@@ -96,5 +114,7 @@ export default {
 
 <!-- Add 'scoped' attribute to limit CSS to this component only -->
 <style scoped>
-
+  .__align-right{
+    text-align: right;
+  }
 </style>

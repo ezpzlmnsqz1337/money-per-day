@@ -4,12 +4,12 @@
       <v-toolbar-side-icon @click.stop="toggleDrawer"></v-toolbar-side-icon>
       <v-toolbar-title>{{text}}</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-toolbar-items v-if="state.user">
-        <v-chip class="chip_height">
+      <v-toolbar-items v-if="user">
+        <v-chip class="__user_chip" @click="$router.push('/Profile')">
           <v-avatar>
-            <img v-bind:src="state.user.photoURL" alt="user icon">
+            <img v-bind:src="user.photoURL" alt="user icon">
           </v-avatar>
-          {{state.user.displayName}}
+          {{user.displayName}}
         </v-chip>
       </v-toolbar-items>
     </v-toolbar>
@@ -17,13 +17,13 @@
 </template>
 
 <script>
-import store from '../services/Store'
+import firebase from 'firebase'
 
 export default {
   name: 'topbar',
   data () {
     return {
-      state: store.state,
+      user: firebase.auth().currentUser,
       text: 'Home'
     }
   },
@@ -43,8 +43,12 @@ export default {
 
 <!-- Add 'scoped' attribute to limit CSS to this component only -->
 <style scoped>
-.chip_height {
+.__user_chip {
   margin-top: 1rem;
   height: 2.7rem;
+}
+
+.__user_chip:hover{
+  cursor: pointer;
 }
 </style>
