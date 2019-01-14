@@ -34,7 +34,9 @@
 </template>
 
 <script>
-import { store } from '../../services/Store'
+import store from '../../services/Store'
+
+import firebase from 'firebase'
 
 export default {
   name: 'settings',
@@ -42,20 +44,45 @@ export default {
     for (let i = 1; i < 32; i++) {
       this.days.push(i)
     }
-
-    setInterval(() => {
-      console.table(this.$data)
-    }, 500)
   },
   mounted: function () {
   },
   data: function () {
     return {
-      salaryDay: store.state.settings.salaryDay,
-      salary: store.state.settings.salary,
-      fixedExpenses: store.state.settings.fixedExpenses,
+      user: firebase.auth().currentUser,
       currency: store.state.settings.currency,
       days: []
+    }
+  },
+  computed: {
+    salaryDay: {
+      get: function () {
+        console.log(store)
+        return store.state.settings.salaryDay
+      },
+      set: function (newVal) {
+        store.state.settings.salaryDay = newVal
+        console.log(store)
+        firebase.database().ref('users/' + this.user.uid).update({ state: store.state })
+      }
+    },
+    salary: {
+      get: function () {
+        return store.state.settings.salary
+      },
+      set: function (newVal) {
+        store.state.settings.salary = newVal
+        firebase.database().ref('users/' + this.user.uid).update({ state: store.state })
+      }
+    },
+    fixedExpenses: {
+      get: function () {
+        return store.state.settings.fixedExpenses
+      },
+      set: function (newVal) {
+        store.state.settings.fixedExpenses = newVal
+        firebase.database().ref('users/' + this.user.uid).update({ state: store.state })
+      }
     }
   },
   methods: {

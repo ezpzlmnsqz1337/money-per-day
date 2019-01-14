@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { store } from '../services/Store'
+import store from '../services/Store'
 
 export default {
   name: 'topbar',

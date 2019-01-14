@@ -31,7 +31,7 @@
 
 <script>
 import firebase from 'firebase'
-import { store } from '../services/Store'
+import store from '../services/Store'
 
 export default {
   name: 'drawer',

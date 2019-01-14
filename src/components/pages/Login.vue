@@ -10,14 +10,14 @@
             <v-card-text>
               <v-form>
                 <v-text-field prepend-icon="person" name="login" label="Login" type="text"></v-text-field>
-                <v-text-field prepend-icon="lock" name="password" label="Password" id="password" type="password"></v-text-field>
+                <v-text-field prepend-icon="lock" name="password" label="Password" id="password" type="password" />
               </v-form>
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="primary">Login</v-btn>
             </v-card-actions>
-          <div class="text-xs-center">
+            <div class="text-xs-center">
               <h2>Or sign in with:</h2>
               <a @click="signInWithGoogle()" class="google_sign_in_button" href="#google_sign_in_button" />
             </div>
@@ -30,13 +30,11 @@
 
 <script>
 import firebase from 'firebase'
-import { store } from '../../services/Store'
+// import store from '../../services/Store'
 
 export default {
-  data () {
-    return {
-      state: store.state
-    }
+  data: function () {
+    return {}
   },
   methods: {
     signInWithGoogle () {
@@ -44,15 +42,10 @@ export default {
       firebase
         .auth()
         .signInWithRedirect(provider)
-        .then(result => {
-          store.state.user = result.user
-        })
         .catch(err => console.log(err))
     }
-  },
-  props: {
-    source: String
   }
+
 }
 </script>
 

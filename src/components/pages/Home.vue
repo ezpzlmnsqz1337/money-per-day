@@ -18,31 +18,36 @@
 </template>
 
 <script>
+import store from '../../services/Store'
+
 export default {
   name: 'home',
   data () {
     return {
-      totalMoney: 4400,
+      totalMoney: store.state.settings.salary,
+      fixedExpenses: store.state.settings.fixedExpenses,
+      salaryDay: store.state.settings.salaryDay,
       day: new Date().getDate(),
       month: new Date().getMonth() + 1,
       year: new Date().getFullYear()
     }
   },
   computed: {
-    daysInMonth () {
+    daysInMonth: function () {
       console.log(new Date(this.year, this.month, 0).getDate())
       return new Date(this.year, this.month, 0).getDate()
     },
-    daysToNextSalary () {
-      return this.daysInMonth - this.day
+    spendings: function () {
+      return 2000
     },
-    dailyIncome () {
-      return Math.round(this.totalMoney / this.daysInMonth)
+    daysToNextSalary: function () {
+      console.log('Day: ', this.day)
+      return (this.daysInMonth + this.salaryDay) - this.day
     },
-    spendings () {
-      return 2200
+    dailyIncome: function () {
+      return Math.round((this.totalMoney - this.fixedExpenses) / this.daysInMonth)
     },
-    cards () {
+    cards: function () {
       return [
         {
           id: 1,

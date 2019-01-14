@@ -7,7 +7,7 @@ import router from './router'
 import VueFire from 'vuefire'
 import firebase from 'firebase'
 import { config } from './services/DataProvider'
-import { store } from './services/Store'
+import store from './services/Store'
 
 Vue.config.productionTip = false
 Vue.use(Vuetify)
@@ -16,7 +16,7 @@ Vue.use(firebase)
 
 router.beforeEach((to, from, next) => {
   if (to.path !== '/login') {
-    if (store.state.user) {
+    if (firebase.auth().currentUser) {
       console.log('There is a token, resume. (' + to.path + ')')
       next()
     } else {
@@ -35,9 +35,9 @@ new Vue({
   router,
   created () {
     firebase.initializeApp(config)
-    firebase.auth().onAuthStateChanged((user) => {
+    firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        store.setUser(user)
+        store.createOrSetUser()
         this.$router.push('/home')
       } else {
         this.$router.push('/login')
@@ -45,12 +45,9 @@ new Vue({
     })
   },
   data () {
-    return {
-      state: store.state
-    }
+    return {}
   },
-  methods: {
-  },
+  methods: {},
   components: { App },
   template: '<App/>'
 })
