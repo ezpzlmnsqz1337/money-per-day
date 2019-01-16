@@ -44,7 +44,6 @@
 </template>
 
 <script>
-import store from '../../services/Store'
 import { currencies } from '../../assets/currencies'
 
 import firebase from 'firebase'
@@ -60,7 +59,7 @@ export default {
   },
   data: function () {
     return {
-      user: store.user,
+      user: this.$store.user,
       days: [],
       currencies: Object.keys(currencies)
     }
@@ -68,38 +67,42 @@ export default {
   computed: {
     salaryDay: {
       get: function () {
-        return parseInt(store.state.settings.salaryDay)
+        return parseInt(this.$store.state.settings.salaryDay)
       },
       set: function (newVal) {
-        store.state.settings.salaryDay = newVal
-        firebase.database().ref('users/' + this.user.uid).update({ state: store.state })
+        this.$store.state.settings.salaryDay = newVal
+        localStorage.state = JSON.stringify(this.$store.state)
+        firebase.database().ref('users/' + this.user.uid).update({ state: this.$store.state })
       }
     },
     salary: {
       get: function () {
-        return parseInt(store.state.settings.salary)
+        return parseInt(this.$store.state.settings.salary)
       },
       set: function (newVal) {
-        store.state.settings.salary = newVal
-        firebase.database().ref('users/' + this.user.uid).update({ state: store.state })
+        this.$store.state.settings.salary = newVal
+        localStorage.state = JSON.stringify(this.$store.state)
+        firebase.database().ref('users/' + this.user.uid).update({ state: this.$store.state })
       }
     },
     fixedExpenses: {
       get: function () {
-        return parseInt(store.state.settings.fixedExpenses)
+        return parseInt(this.$store.state.settings.fixedExpenses)
       },
       set: function (newVal) {
-        store.state.settings.fixedExpenses = newVal
-        firebase.database().ref('users/' + this.user.uid).update({ state: store.state })
+        this.$store.state.settings.fixedExpenses = newVal
+        localStorage.state = JSON.stringify(this.$store.state)
+        firebase.database().ref('users/' + this.user.uid).update({ state: this.$store.state })
       }
     },
     currency: {
       get: function () {
-        return store.state.settings.currency
+        return this.$store.state.settings.currency
       },
       set: function (newVal) {
-        store.state.settings.currency = newVal
-        firebase.database().ref('users/' + this.user.uid).update({ state: store.state })
+        this.$store.state.settings.currency = newVal
+        localStorage.state = JSON.stringify(this.$store.state)
+        firebase.database().ref('users/' + this.user.uid).update({ state: this.$store.state })
       }
     }
   },

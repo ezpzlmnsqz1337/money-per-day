@@ -27,24 +27,23 @@
 <script>
 import firebase from 'firebase'
 import { languages } from 'countries-list'
-import store from '../../services/Store'
 
 export default {
   name: 'profile',
   data () {
     return {
-      user: store.user,
+      user: this.$store.user,
       languages: Object.keys(languages).map(lang => lang.toUpperCase())
     }
   },
   computed: {
     language: {
       get: function () {
-        return store.state.settings.language
+        return this.$store.state.settings.language
       },
       set: function (newVal) {
-        store.state.settings.language = newVal
-        firebase.database().ref('users/' + this.user.uid).update({ state: store.state })
+        this.$store.state.settings.language = newVal
+        firebase.database().ref('users/' + this.user.uid).update({ state: this.$store.state })
       }
     }
   },

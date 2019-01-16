@@ -31,7 +31,6 @@
 
 <script>
 import firebase from 'firebase'
-import store from '../services/Store'
 
 export default {
   name: 'drawer',
@@ -40,8 +39,8 @@ export default {
   },
   data () {
     return {
+      user: true,
       firebase: firebase,
-      user: store.user,
       title: 'Money per day',
       items: [
         {
@@ -83,7 +82,7 @@ export default {
         .auth()
         .signOut()
         .then(() => {
-          store.state.user = null
+          this.$store.state.user = null
         })
         .catch(err => console.log(err))
     }

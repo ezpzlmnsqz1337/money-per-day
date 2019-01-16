@@ -30,7 +30,6 @@
 
 <script>
 import firebase from 'firebase'
-// import store from '../../services/Store'
 
 export default {
   data: function () {
@@ -38,11 +37,14 @@ export default {
   },
   methods: {
     signInWithGoogle () {
+      alert('yes')
       const provider = new firebase.auth.GoogleAuthProvider()
       firebase
         .auth()
         .signInWithRedirect(provider)
-        .catch(err => console.log(err))
+        .catch(err =>
+          alert(err)
+        )
     }
   }
 

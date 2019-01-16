@@ -29,6 +29,8 @@ router.beforeEach((to, from, next) => {
   }
 })
 
+Object.defineProperty(Vue.prototype, '$store', { value: store })
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
@@ -44,6 +46,7 @@ new Vue({
     authenticate () {
       firebase.auth().onAuthStateChanged(user => {
         if (user) {
+          this.$root.$emit('userAuthenticated')
           store.createOrSetUser()
           this.$router.push('/home')
         } else {

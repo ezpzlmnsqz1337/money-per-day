@@ -6,17 +6,33 @@ class Store {
     this.user = null
     this.state = {
       settings: {
+        spendings: [
+          {
+            name: 'Rohlík',
+            price: '16',
+            currency: 'CZK',
+            date: '16.1.2019'
+          }
+        ],
+
         salaryDay: 1,
         salary: 0,
-        fixedExpenses: 0,
-        currency: '€',
+        fixedExpenses: [
+          {
+            name: 'Nájem',
+            price: '11900',
+            currency: 'CZK'
+          }
+        ],
+        currency: 'CZK',
         language: 'Czech'
-      }
+      },
+      timestamp: null
     }
   }
 
   setUser (user) {
-    this.state.user = user
+    this.user = user
   }
 
   async createOrSetUser () {
@@ -25,6 +41,7 @@ class Store {
     const userRef = firebase.database().ref('users/' + user.uid)
     userRef.once('value', userSnapshot => {
       const userData = {
+        uid: user.uid,
         name: user.displayName,
         email: user.email,
         photoURL: user.photoURL
@@ -47,6 +64,7 @@ class Store {
     })
 
     this.user = {
+      uid: user.uid,
       name: user.displayName,
       email: user.email,
       photoURL: user.photoURL

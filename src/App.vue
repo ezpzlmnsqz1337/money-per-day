@@ -3,9 +3,7 @@
     <Drawer />
     <Header/>
     <v-content>
-      <v-container fluid>
-        <router-view></router-view>
-      </v-container>
+      <router-view></router-view>
     </v-content>
     <v-footer app></v-footer>
   </v-app>
@@ -17,6 +15,9 @@ import Drawer from './components/Drawer.vue'
 
 export default {
   name: 'App',
+  beforeCreate: function () {
+    if (localStorage.state) this.$store.state = JSON.parse(localStorage.state)
+  },
   data () {
     return {
 

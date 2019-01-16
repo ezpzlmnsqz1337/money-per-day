@@ -1,35 +1,26 @@
 <template>
-  <v-layout row>
-    <v-toolbar color="indigo" dark fixed app>
-      <v-toolbar-side-icon @click.stop="toggleDrawer"></v-toolbar-side-icon>
-      <v-toolbar-title>{{text}}</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-toolbar-items v-if="user">
-        <v-chip class="__user_chip" @click="$router.push('/Profile')">
-          <v-avatar>
-            <img v-bind:src="user.photoURL" alt="user icon">
-          </v-avatar>
-          {{user.displayName}}
-        </v-chip>
-      </v-toolbar-items>
-    </v-toolbar>
-  </v-layout>
+  <v-toolbar color="indigo" dark fixed app>
+    <v-toolbar-side-icon @click.stop="toggleDrawer"></v-toolbar-side-icon>
+    <v-toolbar-title>{{text}}</v-toolbar-title>
+    <v-spacer></v-spacer>
+    <v-toolbar-items v-if="false">
+      <v-chip class="__user_chip" @click="$router.push('/Profile')">
+        <v-avatar>
+          <img v-bind:src="user.photoURL" alt="user icon">
+        </v-avatar>
+        {{ user.displayName }}
+      </v-chip>
+    </v-toolbar-items>
+  </v-toolbar>
 </template>
 
 <script>
-import store from '../services/Store'
-
 export default {
   name: 'topbar',
-  data () {
+  data: function () {
     return {
+      user: this.$store.user,
       text: 'Home'
-    }
-  },
-  computed: {
-    user () {
-      console.log('user: ', store)
-      return store.user
     }
   },
   methods: {
