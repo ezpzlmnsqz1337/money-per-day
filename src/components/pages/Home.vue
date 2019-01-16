@@ -110,6 +110,22 @@ export default {
         }
       ]
     }
+  },
+  methods: {
+    navigateTo: function (place) {
+      console.log('PLace: ', place)
+      console.log('Routes: ', this.$router.options.routes)
+      if (this.$router.options.routes.includes('/' + place)) this.$router.push(place)
+    },
+    addItemToStore: function (name, price) {
+      console.log('adding', name, price)
+      this.$store.state.settings.spendings.push({
+        name,
+        price,
+        date: new Date().toLocaleString('cs-CZ', { timeZone: 'UTC' })
+      })
+      console.log('Adding: ', name, price)
+    }
   }
 }
 </script>

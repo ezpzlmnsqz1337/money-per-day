@@ -1,13 +1,20 @@
 import annyang from 'annyang'
-import { SpeechKITT } from '../../../node_modules/speechkitt/src/speechkitt'
+import { SpeechKITT } from '../../node_modules/speechkitt/src/speechkitt'
 
 export default {
   mounted: function () {
     if (annyang) {
+      annyang.setLanguage('cs')
       // Add our commands to annyang
       annyang.addCommands({
-        'hello': () => { console.log('hello') },
-        'add *item *price': (item, price) => this.$store.addSpending(item, price)
+        'en': {
+          'hello': () => { console.log('hello') },
+          'add *item for *price': (item, price) => this.$store.addSpending(item, price)
+        },
+        'cs': {
+          'hello': () => { console.log('hello') },
+          'přidej *item za *price': (item, price) => this.$store.addSpending(item, price)
+        }
       })
       SpeechKITT.displayRecognizedSentence(true)
 
