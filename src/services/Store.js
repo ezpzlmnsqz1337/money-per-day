@@ -11,7 +11,7 @@ class Store {
             name: 'Rohlík',
             price: '16',
             currency: 'CZK',
-            date: '16.1.2019'
+            date: new Date()
           }
         ],
 
@@ -33,6 +33,15 @@ class Store {
 
   setUser (user) {
     this.user = user
+  }
+
+  addSpending (name, price) {
+    this.state.settings.spendings.push({
+      name,
+      price,
+      currency: this.state.settings.currency,
+      date: new Date().toLocaleDateString()
+    })
   }
 
   async createOrSetUser () {

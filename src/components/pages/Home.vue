@@ -34,32 +34,13 @@
 </template>
 
 <script>
-// import annyang from 'annyang'
-// import { SpeechKITT } from '../../../node_modules/speechkitt/src/speechkitt'
 import Spendings from '../Spendings'
+import voice from '../../mixins/voice'
 
 export default {
+  mixin: [ voice ],
   name: 'home',
   components: { Spendings },
-  mounted: function () {
-    /* if (annyang) {
-      // Add our commands to annyang
-      annyang.addCommands({
-        'hello': function () { console.log('hello') },
-        'open *page': this.navigateTo
-      })
-      console.log(SpeechKITT)
-
-      // Tell KITT to use annyang
-      SpeechKITT.annyang()
-
-      // Define a stylesheet for KITT to use
-      SpeechKITT.setStylesheet('//cdnjs.cloudflare.com/ajax/libs/SpeechKITT/1.0.0/themes/flat.css')
-
-      // Render KITT's interface
-      SpeechKITT.vroom()
-    } */
-  },
   data: function () {
     return {
       currency: this.$store.state.settings.currency,
@@ -128,13 +109,6 @@ export default {
           type: 'value'
         }
       ]
-    }
-  },
-  methods: {
-    navigateTo: function (place) {
-      console.log('PLace: ', place)
-      console.log('Routes: ', this.$router.options.routes)
-      if (this.$router.options.routes.includes(place)) this.$router.push(place)
     }
   }
 }
