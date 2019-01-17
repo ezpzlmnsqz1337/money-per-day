@@ -46,7 +46,6 @@ new Vue({
     authenticate () {
       firebase.auth().onAuthStateChanged(user => {
         if (user) {
-          this.$root.$emit('userAuthenticated')
           store.createOrSetUser()
           this.$router.push('/home')
         } else {

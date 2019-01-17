@@ -13,13 +13,18 @@
                 <v-text-field prepend-icon="lock" name="password" label="Password" id="password" type="password" />
               </v-form>
             </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="primary">Login</v-btn>
+            <v-card-actions >
+              <v-layout justify-center px-2>
+                <v-btn color="primary" block>Login</v-btn>
+              </v-layout>
             </v-card-actions>
             <div class="text-xs-center">
               <h2>Or sign in with:</h2>
-              <a @click="signInWithGoogle()" class="google_sign_in_button" href="#google_sign_in_button" />
+              <v-layout px-2>
+                <a @click="signInWithGoogle()" class="google_sign_in_button" @focus="setGoogleButtonState('focus')" >
+                  <img ref="googleButton" :src="googleBtn.normal" @mouseover="setGoogleButtonState('hover')" @mouseout="setGoogleButtonState('normal')" />
+                </a>
+              </v-layout>
             </div>
           </v-card>
         </v-flex>
@@ -33,10 +38,16 @@ import firebase from 'firebase'
 
 export default {
   data: function () {
-    return {}
+    return {
+      googleBtn: {
+        normal: require('../../assets/google_button/btn_google_signin_dark_normal_web@2x.png'),
+        focus: require('../../assets/google_button/btn_google_signin_dark_focus_web@2x.png'),
+        hover: require('../../assets/google_button/btn_google_signin_dark_pressed_web@2x.png')
+      }
+    }
   },
   methods: {
-    signInWithGoogle () {
+    signInWithGoogle: function () {
       const provider = new firebase.auth.GoogleAuthProvider()
       firebase
         .auth()
@@ -44,6 +55,17 @@ export default {
         .catch(err =>
           alert(err)
         )
+    },
+    setGoogleButtonState: function (state) {
+      switch (state) {
+        case 'normal': this.$refs.googleButton.setAttribute('src', this.googleBtn.normal)
+          break
+        case 'focus': this.$refs.googleButton.setAttribute('src', this.googleBtn.focus)
+          break
+        case 'hover': this.$refs.googleButton.setAttribute('src', this.googleBtn.hover)
+          break
+        default: console.log('unknown google button state')
+      }
     }
   }
 
@@ -52,18 +74,7 @@ export default {
 
 <!-- Add 'scoped' attribute to limit CSS to this component only -->
 <style scoped>
-  .google_sign_in_button{
-    background: url('../../assets/google_button/btn_google_signin_dark_normal_web@2x.png');
-    display: inline-block;
-    width: 382px;
-    height: 92px;
-  }
-
-  .google_sign_in_button:focus {
-    background: url('../../assets/google_button/btn_google_signin_dark_focus_web@2x.png');
-  }
-
-  .google_sign_in_button:target, .google_sign_in_button:hover{
-    background: url('../../assets/google_button/btn_google_signin_dark_pressed_web@2x.png');
+  .google_sign_in_button img{
+    width: 100%;
   }
 </style>
