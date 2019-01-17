@@ -37,7 +37,6 @@ export default {
   },
   methods: {
     signInWithGoogle () {
-      alert('yes')
       const provider = new firebase.auth.GoogleAuthProvider()
       firebase
         .auth()

@@ -38,7 +38,7 @@ import Spendings from '../Spendings'
 import voice from '../../mixins/voice'
 
 export default {
-  mixin: [ voice ],
+  mixins: [ voice ],
   name: 'home',
   components: { Spendings },
   data: function () {
@@ -116,15 +116,6 @@ export default {
       console.log('PLace: ', place)
       console.log('Routes: ', this.$router.options.routes)
       if (this.$router.options.routes.includes('/' + place)) this.$router.push(place)
-    },
-    addItemToStore: function (name, price) {
-      console.log('adding', name, price)
-      this.$store.state.settings.spendings.push({
-        name,
-        price,
-        date: new Date().toLocaleString('cs-CZ', { timeZone: 'UTC' })
-      })
-      console.log('Adding: ', name, price)
     }
   }
 }

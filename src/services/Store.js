@@ -36,6 +36,7 @@ class Store {
   }
 
   addSpending (name, price) {
+    console.log('adding: ', name, price)
     this.state.settings.spendings.push({
       name,
       price,
