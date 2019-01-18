@@ -41,24 +41,24 @@ export default {
   mixins: [ voice ],
   name: 'home',
   components: { Spendings },
+  mounted: function () {
+    console.log(this.$store.state.settings.salary)
+  },
   data: function () {
     return {
       currency: this.$store.state.settings.currency,
       day: new Date().getDate(),
       month: new Date().getMonth() + 1,
-      year: new Date().getFullYear()
+      year: new Date().getFullYear(),
+      // test
+      totalMoney: this.$store.state.settings.salary,
+      fixedExpenses: this.$store.state.settings.fixedExpenses,
+      salaryDay: this.$store.state.settings.salaryDay
+
     }
   },
   computed: {
-    totalMoney: function () {
-      return this.$store.state.settings.salary
-    },
-    fixedExpenses: function () {
-      return this.$store.state.settings.fixedExpenses
-    },
-    salaryDay: function () {
-      return this.$store.state.settings.salaryDay
-    },
+
     spendings: function () {
       return this.$store.state.settings.spendings
     },

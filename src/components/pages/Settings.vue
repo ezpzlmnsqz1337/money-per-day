@@ -46,8 +46,6 @@
 <script>
 import { currencies } from '../../assets/currencies'
 
-import firebase from 'firebase'
-
 export default {
   name: 'settings',
   created: function () {
@@ -59,7 +57,6 @@ export default {
   },
   data: function () {
     return {
-      user: this.$store.user,
       days: [],
       currencies: Object.keys(currencies)
     }
@@ -71,8 +68,7 @@ export default {
       },
       set: function (newVal) {
         this.$store.state.settings.salaryDay = newVal
-        localStorage.state = JSON.stringify(this.$store.state)
-        firebase.database().ref('users/' + this.user.uid).update({ state: this.$store.state })
+        this.$store.updateTimestamp()
       }
     },
     salary: {
@@ -81,8 +77,7 @@ export default {
       },
       set: function (newVal) {
         this.$store.state.settings.salary = newVal
-        localStorage.state = JSON.stringify(this.$store.state)
-        firebase.database().ref('users/' + this.user.uid).update({ state: this.$store.state })
+        this.$store.updateTimestamp()
       }
     },
     fixedExpenses: {
@@ -91,8 +86,7 @@ export default {
       },
       set: function (newVal) {
         this.$store.state.settings.fixedExpenses = newVal
-        localStorage.state = JSON.stringify(this.$store.state)
-        firebase.database().ref('users/' + this.user.uid).update({ state: this.$store.state })
+        this.$store.updateTimestamp()
       }
     },
     currency: {
@@ -101,8 +95,7 @@ export default {
       },
       set: function (newVal) {
         this.$store.state.settings.currency = newVal
-        localStorage.state = JSON.stringify(this.$store.state)
-        firebase.database().ref('users/' + this.user.uid).update({ state: this.$store.state })
+        this.$store.updateTimestamp()
       }
     }
   },

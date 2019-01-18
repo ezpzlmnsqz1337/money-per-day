@@ -9,19 +9,19 @@
             </v-toolbar>
             <v-card-text>
               <v-form>
-                <v-text-field prepend-icon="person" name="login" label="Login" type="text"></v-text-field>
-                <v-text-field prepend-icon="lock" name="password" label="Password" id="password" type="password" />
+                <v-text-field prepend-icon="person" v-model="email" name="login" label="Login" type="text"></v-text-field>
+                <v-text-field prepend-icon="lock" v-model="password" name="password" label="Password" id="password" type="password" />
               </v-form>
             </v-card-text>
             <v-card-actions >
               <v-layout justify-center px-2>
-                <v-btn color="primary" block>Login</v-btn>
+                <v-btn color="primary" @click="signInWithEmail" block>Login</v-btn>
               </v-layout>
             </v-card-actions>
             <div class="text-xs-center">
               <h2>Or sign in with:</h2>
               <v-layout px-2>
-                <a @click="signInWithGoogle()" class="google_sign_in_button" @focus="setGoogleButtonState('focus')" >
+                <a @click="signInWithGoogle()" class="google_sign_in_button" @focus="setGoogleButtonState('focus')" href="#">
                   <img ref="googleButton" :src="googleBtn.normal" @mouseover="setGoogleButtonState('hover')" @mouseout="setGoogleButtonState('normal')" />
                 </a>
               </v-layout>
@@ -39,6 +39,8 @@ import firebase from 'firebase'
 export default {
   data: function () {
     return {
+      email: '',
+      password: '',
       googleBtn: {
         normal: require('../../assets/google_button/btn_google_signin_dark_normal_web@2x.png'),
         focus: require('../../assets/google_button/btn_google_signin_dark_focus_web@2x.png'),
@@ -47,11 +49,19 @@ export default {
     }
   },
   methods: {
+    signInWithEmail: function () {
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(this.email, this.password)
+        .catch(err =>
+          alert(err)
+        )
+    },
     signInWithGoogle: function () {
       const provider = new firebase.auth.GoogleAuthProvider()
       firebase
         .auth()
-        .signInWithRedirect(provider)
+        .signInWithPopup(provider)
         .catch(err =>
           alert(err)
         )

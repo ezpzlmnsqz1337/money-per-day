@@ -2,6 +2,7 @@ import firebase from 'firebase'
 
 class Store {
   constructor () {
+    console.log('created')
     this.debug = true
     this.user = null
     this.state = {
@@ -29,6 +30,27 @@ class Store {
       },
       timestamp: null
     }
+    if (localStorage.state) {
+      console.log('checking localstorage')
+      const localState = JSON.parse(localStorage.state)
+      const ts = new Date(localState.timestamp)
+      if (ts > this.state.timestamp) this.state = { ...this.state, ...localState }
+    }
+
+    setTimeout(() => {
+      const user = firebase.auth().currentUser
+      if (user.uid) {
+        console.log('checking firebase')
+        const stateRef = firebase.database().ref('users/' + user.uid + '/state')
+        stateRef.once('value', stateSnapshot => {
+          if (stateSnapshot.exists()) {
+            console.log('firebase exists')
+            const ts = new Date(stateSnapshot.timestamp)
+            if (ts > this.state.timestamp) this.state = { ...this.state, ...stateSnapshot }
+          }
+        })
+      }
+    }, 1000)
   }
 
   setUser (user) {
@@ -43,6 +65,7 @@ class Store {
       currency: this.state.settings.currency,
       date: new Date().toLocaleDateString()
     })
+    this.updateTimestamp()
   }
 
   async createOrSetUser () {
@@ -70,7 +93,10 @@ class Store {
 
     const storeRef = firebase.database().ref('users/' + user.uid + '/state')
     storeRef.on('value', storeSnapshot => {
-      if (storeSnapshot.exists()) this.state = { ...this.state, ...storeSnapshot.val() }
+      if (storeSnapshot.exists()) {
+        this.state = { ...this.state, ...storeSnapshot.val() }
+        this.updateTimestamp()
+      }
     })
 
     this.user = {
@@ -79,6 +105,12 @@ class Store {
       email: user.email,
       photoURL: user.photoURL
     }
+  }
+
+  updateTimestamp () {
+    this.state.timestamp = new Date()
+    localStorage.state = JSON.stringify(this.state)
+    firebase.database().ref('users/' + this.user.uid).update({ state: this.state })
   }
 }
 

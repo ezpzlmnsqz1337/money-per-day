@@ -15,9 +15,6 @@ import Drawer from './components/Drawer.vue'
 
 export default {
   name: 'App',
-  beforeCreate: function () {
-    if (localStorage.state) this.$store.state = JSON.parse(localStorage.state)
-  },
   data () {
     return {
 
