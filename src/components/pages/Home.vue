@@ -27,6 +27,7 @@
     </v-layout>
     <v-layout row>
       <v-flex xs12>
+        <FixedExpenses />
         <Spendings />
       </v-flex>
     </v-layout>
@@ -35,12 +36,13 @@
 
 <script>
 import Spendings from '../Spendings'
+import FixedExpenses from '../FixedExpenses'
 import voice from '../../mixins/voice'
 
 export default {
   mixins: [ voice ],
   name: 'home',
-  components: { Spendings },
+  components: { Spendings, FixedExpenses },
   mounted: function () {
     console.log(this.$store.state.settings.salary)
   },

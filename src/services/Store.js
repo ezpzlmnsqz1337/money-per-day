@@ -8,7 +8,6 @@ class Store {
     this.state = {
       settings: {
         spendings: [],
-
         salaryDay: 1,
         salary: 0,
         fixedExpenses: [],
@@ -21,7 +20,10 @@ class Store {
       console.log('checking localstorage')
       const localState = JSON.parse(localStorage.state)
       const ts = new Date(localState.timestamp)
-      if (ts > this.state.timestamp) this.state = { ...this.state, ...localState }
+      if (ts > this.state.timestamp) {
+        console.log('updating from local storage')
+        this.state = { ...this.state, ...localState }
+      }
     }
 
     setTimeout(() => {
@@ -31,9 +33,11 @@ class Store {
         const stateRef = firebase.database().ref('users/' + user.uid + '/state')
         stateRef.once('value', stateSnapshot => {
           if (stateSnapshot.exists()) {
-            console.log('firebase exists')
             const ts = new Date(stateSnapshot.timestamp)
-            if (ts > this.state.timestamp) this.state = { ...this.state, ...stateSnapshot }
+            if (ts > this.state.timestamp) {
+              console.log('Updating from firebase')
+              this.state = { ...this.state, ...stateSnapshot }
+            }
           }
         })
       }
@@ -70,11 +74,23 @@ class Store {
   addSpending (name, price) {
     console.log('adding: ', name, price)
     this.state.settings.spendings.push({
+      id: this.state.settings.spendings.length + 1,
       name,
       price,
       currency: this.state.settings.currency,
       date: new Date().toLocaleDateString()
     })
+    this.updateTimestamp()
+  }
+
+  removeSpending (id) {
+    const spendings = this.state.settings.spendings
+    for (let i = 0; i < spendings.length; i++) {
+      if (spendings[i].id === id) {
+        spendings.splice(spendings.indexOf(spendings[i]), 1)
+        break
+      }
+    }
     this.updateTimestamp()
   }
 

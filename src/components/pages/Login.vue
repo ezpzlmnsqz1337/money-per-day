@@ -30,6 +30,18 @@
         </v-flex>
       </v-layout>
     </v-container>
+    <v-dialog
+        v-model="dialog"
+        persistent
+        width="200"
+      >
+      <v-card color="primary" dark>
+        <v-card-text class="text-xs-center">
+          Logging in...<br /><br />
+          <v-progress-circular indeterminate color="white" class="mb-0" />
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </v-layout>
 </template>
 
@@ -39,6 +51,7 @@ import firebase from 'firebase'
 export default {
   data: function () {
     return {
+      dialog: false,
       email: '',
       password: '',
       googleBtn: {
@@ -58,6 +71,7 @@ export default {
         )
     },
     signInWithGoogle: function () {
+      this.dialog = true
       const provider = new firebase.auth.GoogleAuthProvider()
       firebase
         .auth()

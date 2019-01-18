@@ -1,0 +1,77 @@
+<template>
+    <v-dialog v-model="dialog" width="500">
+      <slot slot="activator" name="activator"></slot>
+
+      <v-card>
+          <v-card-title
+          class="headline grey lighten-2"
+          primary-title
+          @click="addSpending">
+          Add spending
+          </v-card-title>
+
+          <v-form v-model="addSpendingFormValid">
+          <v-container>
+              <v-layout>
+              <v-flex xs6>
+                  <v-text-field v-model="spendingName" label="Item"
+                  :rules="spendingNameRules"
+                  :counter="10"
+                  required />
+              </v-flex>
+
+              <v-flex xs6>
+                  <v-text-field v-model="spendingPrice" label="Price"
+                  :rules="spendingPriceRules"
+                  required />
+              </v-flex>
+              </v-layout>
+          </v-container>
+          </v-form>
+
+          <v-divider></v-divider>
+
+          <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" flat @click="addSpending">Add</v-btn>
+          <v-btn color="primary" flat @click="dialog = false">Cancel</v-btn>
+          </v-card-actions>
+      </v-card>
+  </v-dialog>
+</template>
+
+<script>
+export default {
+  data: function () {
+    return {
+      dialog: false,
+      addSpendingFormValid: false,
+      spendingName: '',
+      spendingNameRules: [
+        v => !!v || 'Item name is required',
+        v => v.length <= 10 || 'Name must be less than 10 characters'
+      ],
+      spendingPrice: 0,
+      spendingPriceRules: [
+        v => !!v || 'Price is required',
+        v => /^([1-9]\d*(\.|,)\d*|0?(\.|,)\d*[1-9]\d*|[1-9]\d*)$/.test(v) || 'Price must be a number'
+      ],
+      spendingsList: this.$store.state.settings.spendings
+    }
+  },
+  methods: {
+    addSpending: function () {
+      if (this.addSpendingFormValid) {
+        this.$store.addSpending(this.spendingName, this.spendingPrice)
+        this.dialog = false
+        this.spendingName = ''
+        this.spendingPrice = 0
+      }
+    }
+  }
+}
+</script>
+
+<style scoped>
+
+</style>
