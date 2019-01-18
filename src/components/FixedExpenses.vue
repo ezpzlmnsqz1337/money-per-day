@@ -19,6 +19,11 @@
             @click="itemClick"
             >
 
+          <v-list-tile-action>
+              <v-icon @click="removeExpense(expense.id)"
+              class="__delete_button">delete</v-icon>
+          </v-list-tile-action>
+
           <v-list-tile-content>
               <v-list-tile-title v-html="e.name"></v-list-tile-title>
           </v-list-tile-content>
@@ -47,10 +52,11 @@
 
 <script>
 import FixedExpensesDialog from './dialogs/FixedExpensesDialog'
+import DeleteDialog from './dialogs/DeleteDialog'
 
 export default {
   name: 'fixedExpenses',
-  components: { FixedExpensesDialog },
+  components: { FixedExpensesDialog, DeleteDialog },
   data () {
     return {
       fixedExpensesList: this.$store.state.settings.fixedExpenses,
@@ -64,7 +70,10 @@ export default {
   },
   methods: {
     itemClick () {
-      console.log('item click')
+
+    },
+    removeExpense: function (id) {
+      this.$store.removeFixedExpense(id)
     }
   }
 }
