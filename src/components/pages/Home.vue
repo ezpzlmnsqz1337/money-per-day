@@ -13,9 +13,9 @@
                 <v-flex xs4 >
                   <v-layout align-end justify-end fill-height>
                     <v-progress-circular v-if="card.type==='circle'"
-                      :color="card.value < 0 ? 'red' : 'green'"
-                      :value="((card.value/30) * 100)" :rotate="90" :size="50" :width="7">
-                      <span v-bind:class="{ '__text-red': (card.value < 0), '__text-green': (card.value > 0) }">{{card.value}}</span>
+                      :color="daysToNextSalaryColor(card.value)"
+                      :value="((card.value/30) * 100)" :rotate="90" >
+                      <span style="color: black">{{card.value}}</span>
                     </v-progress-circular>
                     <div class="__card_value" v-bind:class="{ '__text-red': (card.value < 0), '__text-green': (card.value > 0) }" v-if="card.type==='value'">{{card.value}} {{ currency }}</div>
                   </v-layout>
@@ -50,15 +50,21 @@ export default {
       day: new Date().getDate(),
       month: new Date().getMonth() + 1,
       year: new Date().getFullYear(),
+      fixedExpensesList: this.$store.state.settings.fixedExpenses,
       // test
       totalMoney: this.$store.state.settings.salary,
-      fixedExpenses: this.$store.state.settings.fixedExpenses,
       salaryDay: this.$store.state.settings.salaryDay
 
     }
   },
   computed: {
-
+    fixedExpenses: function () {
+      let total = 0
+      this.fixedExpensesList.forEach(expense => {
+        total += parseInt(expense.price)
+      })
+      return total
+    },
     spendings: function () {
       return this.$store.state.settings.spendings
     },
@@ -112,6 +118,15 @@ export default {
     }
   },
   methods: {
+    daysToNextSalaryColor: function (days) {
+      if (days > 20) {
+        return 'red'
+      } else if (days > 10) {
+        return 'yellow'
+      } else {
+        return 'green'
+      }
+    },
     navigateTo: function (place) {
       console.log('PLace: ', place)
       console.log('Routes: ', this.$router.options.routes)

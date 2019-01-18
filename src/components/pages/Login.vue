@@ -20,7 +20,7 @@
             </v-card-actions>
             <div class="text-xs-center">
               <h2>Or sign in with:</h2>
-              <v-layout px-2>
+              <v-layout px-2 justify-center>
                 <a @click="signInWithGoogle()" class="google_sign_in_button" @focus="setGoogleButtonState('focus')" href="#">
                   <img ref="googleButton" :src="googleBtn.normal" @mouseover="setGoogleButtonState('hover')" @mouseout="setGoogleButtonState('normal')" />
                 </a>

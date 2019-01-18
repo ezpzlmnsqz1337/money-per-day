@@ -7,24 +7,11 @@ class Store {
     this.user = null
     this.state = {
       settings: {
-        spendings: [
-          {
-            name: 'Rohlík',
-            price: '16',
-            currency: 'CZK',
-            date: new Date()
-          }
-        ],
+        spendings: [],
 
         salaryDay: 1,
         salary: 0,
-        fixedExpenses: [
-          {
-            name: 'Nájem',
-            price: '11900',
-            currency: 'CZK'
-          }
-        ],
+        fixedExpenses: [],
         currency: 'CZK',
         language: 'Czech'
       },
@@ -39,7 +26,7 @@ class Store {
 
     setTimeout(() => {
       const user = firebase.auth().currentUser
-      if (user.uid) {
+      if (user && user.uid) {
         console.log('checking firebase')
         const stateRef = firebase.database().ref('users/' + user.uid + '/state')
         stateRef.once('value', stateSnapshot => {
@@ -55,6 +42,29 @@ class Store {
 
   setUser (user) {
     this.user = user
+  }
+
+  addFixedExpense (name, price) {
+    this.state.settings.fixedExpenses.push(
+      {
+        id: this.state.settings.fixedExpenses.length + 1,
+        name,
+        price,
+        currency: this.state.settings.currency
+      }
+    )
+    this.updateTimestamp()
+  }
+
+  removeFixedExpense (id) {
+    const expenses = this.state.settings.fixedExpenses
+    for (let i = 0; i < expenses.length; i++) {
+      if (expenses[i].id === id) {
+        expenses.splice(expenses.indexOf(expenses[i]), 1)
+        break
+      }
+    }
+    this.updateTimestamp()
   }
 
   addSpending (name, price) {
@@ -92,7 +102,7 @@ class Store {
     })
 
     const storeRef = firebase.database().ref('users/' + user.uid + '/state')
-    storeRef.on('value', storeSnapshot => {
+    storeRef.once('value', storeSnapshot => {
       if (storeSnapshot.exists()) {
         this.state = { ...this.state, ...storeSnapshot.val() }
         this.updateTimestamp()
