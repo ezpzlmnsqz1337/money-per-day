@@ -16,7 +16,7 @@
                 <v-list-tile
                     v-for="(s, index) in spendings"
                     :key="index"
-                    @click="itemClick"
+                    @click="itemClick(s)"
                     >
 
                     <v-list-tile-content>
@@ -65,8 +65,8 @@ export default {
     }
   },
   methods: {
-    itemClick () {
-      console.log('item click')
+    itemClick (item) {
+      this.$root.$emit('showEditDialog', item)
     }
   }
 }

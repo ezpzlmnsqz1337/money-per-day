@@ -29,6 +29,7 @@
       <v-flex xs12>
         <FixedExpenses />
         <Spendings />
+        <EditDialog />
       </v-flex>
     </v-layout>
   </v-container>
@@ -37,12 +38,13 @@
 <script>
 import Spendings from '../Spendings'
 import FixedExpenses from '../FixedExpenses'
+import EditDialog from '../dialogs/EditDialog'
 import voice from '../../mixins/voice'
 
 export default {
   mixins: [ voice ],
   name: 'home',
-  components: { Spendings, FixedExpenses },
+  components: { Spendings, FixedExpenses, EditDialog },
   mounted: function () {
     console.log(this.$store.state.settings.salary)
   },
@@ -53,6 +55,7 @@ export default {
       month: new Date().getMonth() + 1,
       year: new Date().getFullYear(),
       fixedExpensesList: this.$store.state.settings.fixedExpenses,
+      spendingsList: this.$store.state.settings.spendings,
       // test
       totalMoney: this.$store.state.settings.salary,
       salaryDay: this.$store.state.settings.salaryDay
@@ -67,16 +70,13 @@ export default {
       })
       return total
     },
-    spendings: function () {
-      return this.$store.state.settings.spendings
-    },
     daysInMonth: function () {
       console.log(new Date(this.year, this.month, 0).getDate())
       return new Date(this.year, this.month, 0).getDate()
     },
-    totalSpendings: function () {
+    spendings: function () {
       let total = 0
-      this.spendings.forEach(s => {
+      this.spendingsList.forEach(s => {
         total += parseInt(s.price)
       })
       return total * -1
@@ -88,7 +88,7 @@ export default {
       return Math.round((this.totalMoney - this.fixedExpenses) / this.daysInMonth)
     },
     moneyForToday: function () {
-      return (this.daysToNextSalary - this.salaryDay) * this.dailyIncome + this.totalSpendings
+      return (this.daysToNextSalary - this.salaryDay) * this.dailyIncome + this.spendings
     },
     cards: function () {
       return [
@@ -113,7 +113,7 @@ export default {
         {
           id: 4,
           name: 'Total Spendings',
-          value: this.totalSpendings,
+          value: this.spendings,
           type: 'value'
         }
       ]

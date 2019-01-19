@@ -54,7 +54,8 @@ class Store {
         id: this.state.settings.fixedExpenses.length + 1,
         name,
         price,
-        currency: this.state.settings.currency
+        currency: this.state.settings.currency,
+        type: 'FIXED_EXPENSE'
       }
     )
     this.updateTimestamp()
@@ -71,6 +72,19 @@ class Store {
     this.updateTimestamp()
   }
 
+  editFixedExpense (id, name, price) {
+    const expenses = this.state.settings.fixedExpenses
+    for (let i = 0; i < expenses.length; i++) {
+      if (expenses[i].id === id) {
+        console.log('Setting: ', expenses[i], price)
+        expenses[i].name = name
+        expenses[i].price = price
+        break
+      }
+    }
+    this.updateTimestamp()
+  }
+
   addSpending (name, price) {
     console.log('adding: ', name, price)
     this.state.settings.spendings.push({
@@ -78,7 +92,8 @@ class Store {
       name,
       price,
       currency: this.state.settings.currency,
-      date: new Date().toLocaleDateString()
+      date: new Date().toLocaleDateString(),
+      type: 'SPENDING'
     })
     this.updateTimestamp()
   }
@@ -88,6 +103,19 @@ class Store {
     for (let i = 0; i < spendings.length; i++) {
       if (spendings[i].id === id) {
         spendings.splice(spendings.indexOf(spendings[i]), 1)
+        break
+      }
+    }
+    this.updateTimestamp()
+  }
+
+  editSpending (id, name, price) {
+    const spendings = this.state.settings.spendings
+    for (let i = 0; i < spendings.length; i++) {
+      if (spendings[i].id === id) {
+        console.log('edition spending: ', name, price)
+        spendings[i].name = name
+        spendings[i].price = price
         break
       }
     }
