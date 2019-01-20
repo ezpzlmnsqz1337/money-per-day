@@ -10,13 +10,13 @@
           Add fixed expense
           </v-card-title>
 
-          <v-form v-model="addExpenseFormValid">
+          <v-form v-model="addExpenseFormValid" ref="form">
           <v-container>
               <v-layout>
               <v-flex xs6>
                   <v-text-field v-model="fixedExpenseName" label="Item"
                   :rules="fixedExpenseNameRules"
-                  :counter="10"
+                  :counter="fixedExpenseLength"
                   required />
               </v-flex>
 
@@ -33,8 +33,8 @@
 
           <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="primary" flat @click="addFixedExpense">Add</v-btn>
-          <v-btn color="primary" flat @click="dialog = false">Cancel</v-btn>
+          <v-btn color="error" @click="cancel">Cancel</v-btn>
+          <v-btn color="primary" @click="addFixedExpense">Add</v-btn>
           </v-card-actions>
       </v-card>
   </v-dialog>
@@ -47,9 +47,10 @@ export default {
       dialog: false,
       addExpenseFormValid: false,
       fixedExpenseName: '',
+      fixedExpenseLength: 50,
       fixedExpenseNameRules: [
         v => !!v || 'Item name is required',
-        v => v.length <= 10 || 'Name must be less than 10 characters'
+        v => v.length <= this.fixedExpenseLength || 'Name must be less than 10 characters'
       ],
       fixedExpensePrice: 0,
       fixedExpensePriceRules: [
@@ -67,6 +68,13 @@ export default {
         this.fixedExpenseName = ''
         this.fixedExpensePrice = 0
       }
+      this.$refs.form.resetValidation()
+    },
+    cancel: function () {
+      this.dialog = false
+      this.fixedExpenseName = ''
+      this.fixedExpensePrice = 0
+      this.$refs.form.resetValidation()
     }
   }
 }

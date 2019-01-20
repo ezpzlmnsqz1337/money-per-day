@@ -47,6 +47,11 @@
 </template>
 
 <script>
+import {
+  ELEMENT_TYPE_SPENDING,
+  ELEMENT_TYPE_FIXED_EXPENSE
+} from '../../constants.js'
+
 export default {
   created: function () {
     this.$root.$on('showEditDialog', item => {
@@ -74,13 +79,13 @@ export default {
   methods: {
     editItem: function () {
       if (this.itemEditFormValid) {
-        if (this.item.type === 'FIXED_EXPENSE') {
+        if (this.item.type === ELEMENT_TYPE_FIXED_EXPENSE) {
           this.$store.editFixedExpense(
             this.item.id,
             this.item.name,
             this.item.price
           )
-        } else if (this.item.type === 'SPENDING') {
+        } else if (this.item.type === ELEMENT_TYPE_SPENDING) {
           this.$store.editSpending(
             this.item.id,
             this.item.name,
@@ -93,9 +98,9 @@ export default {
     },
     deleteItem: function () {
       if (this.itemEditFormValid) {
-        if (this.item.type === 'FIXED_EXPENSE') {
+        if (this.item.type === ELEMENT_TYPE_FIXED_EXPENSE) {
           this.$store.removeFixedExpense(this.item.id)
-        } else if (this.item.type === 'SPENDING') {
+        } else if (this.item.type === ELEMENT_TYPE_SPENDING) {
           this.$store.removeSpending(this.item.id)
         }
 

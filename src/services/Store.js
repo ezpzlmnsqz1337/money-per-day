@@ -1,3 +1,8 @@
+import {
+  ELEMENT_TYPE_FIXED_EXPENSE,
+  ELEMENT_TYPE_SPENDING
+} from '../constants'
+
 import firebase from 'firebase'
 
 class Store {
@@ -55,7 +60,7 @@ class Store {
         name,
         price,
         currency: this.state.settings.currency,
-        type: 'FIXED_EXPENSE'
+        type: ELEMENT_TYPE_FIXED_EXPENSE
       }
     )
     this.updateTimestamp()
@@ -76,7 +81,6 @@ class Store {
     const expenses = this.state.settings.fixedExpenses
     for (let i = 0; i < expenses.length; i++) {
       if (expenses[i].id === id) {
-        console.log('Setting: ', expenses[i], price)
         expenses[i].name = name
         expenses[i].price = price
         break
@@ -86,25 +90,21 @@ class Store {
   }
 
   addSpending (name, price) {
-    console.log('adding: ', name, price)
     this.state.settings.spendings.push({
       id: this.state.settings.spendings.length + 1,
       name,
       price,
       currency: this.state.settings.currency,
       date: new Date().toLocaleDateString(),
-      type: 'SPENDING'
+      type: ELEMENT_TYPE_SPENDING
     })
     this.updateTimestamp()
   }
 
   removeSpending (id) {
-    console.log('delete, ' + id)
     const spendings = this.state.settings.spendings
     for (let i = 0; i < spendings.length; i++) {
-      console.log('spending ' + spendings[i].id)
       if (spendings[i].id === id) {
-        console.log('delete')
         spendings.splice(spendings.indexOf(spendings[i]), 1)
         break
       }
@@ -116,7 +116,6 @@ class Store {
     const spendings = this.state.settings.spendings
     for (let i = 0; i < spendings.length; i++) {
       if (spendings[i].id === id) {
-        console.log('edition spending: ', name, price)
         spendings[i].name = name
         spendings[i].price = price
         break
@@ -165,6 +164,7 @@ class Store {
   }
 
   updateTimestamp () {
+    if (!this.state.settings.spendings || !this.state.settings.fixedExpenses) return
     this.state.timestamp = new Date()
     localStorage.state = JSON.stringify(this.state)
     firebase.database().ref('users/' + this.user.uid).update({ state: this.state })

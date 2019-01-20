@@ -75,7 +75,9 @@ export default {
       return new Date(this.year, this.month, 0).getDate()
     },
     spendings: function () {
+      if (!this.spendingsList) return 0
       let total = 0
+
       this.spendingsList.forEach(s => {
         total += parseInt(s.price)
       })
