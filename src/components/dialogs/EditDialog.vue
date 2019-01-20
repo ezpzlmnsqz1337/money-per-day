@@ -39,7 +39,8 @@
 
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="primary" flat @click="editItem(item)">Save</v-btn>
+        <v-btn color="error" @click="deleteItem(item)">Delete</v-btn>
+        <v-btn color="primary" @click="editItem(item)">Save</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -85,6 +86,17 @@ export default {
             this.item.name,
             this.item.price
           )
+        }
+
+        this.dialog = false
+      }
+    },
+    deleteItem: function () {
+      if (this.itemEditFormValid) {
+        if (this.item.type === 'FIXED_EXPENSE') {
+          this.$store.removeFixedExpense(this.item.id)
+        } else if (this.item.type === 'SPENDING') {
+          this.$store.removeSpending(this.item.id)
         }
 
         this.dialog = false

@@ -99,9 +99,12 @@ class Store {
   }
 
   removeSpending (id) {
+    console.log('delete, ' + id)
     const spendings = this.state.settings.spendings
     for (let i = 0; i < spendings.length; i++) {
+      console.log('spending ' + spendings[i].id)
       if (spendings[i].id === id) {
+        console.log('delete')
         spendings.splice(spendings.indexOf(spendings[i]), 1)
         break
       }

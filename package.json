@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "push": "vue-cli-service build && firebase deploy"
+    "deploy": "vue-cli-service build && firebase deploy"
   },
   "dependencies": {
     "annyang": "^2.6.1",
