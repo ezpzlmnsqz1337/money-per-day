@@ -7,7 +7,7 @@
                 </v-flex>
                 <v-flex xs4>
                     <v-layout justify-end :class="{ __text_red: total > 0 }">
-                    {{ total }} {{ currency }}
+                    {{ total > 0 ? '-' + total : total }} {{ currency }}
                     </v-layout>
                 </v-flex>
             </v-card-title>

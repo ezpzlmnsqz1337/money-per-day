@@ -14,10 +14,11 @@
                   <v-layout align-end justify-end fill-height>
                     <v-progress-circular v-if="card.type==='circle'"
                       :color="daysToNextSalaryColor(card.value)"
-                      :value="((card.value/30) * 100)" :rotate="90" >
+                      :value="(card.value/30) * 100" :rotate="90" >
                       <span style="color: black">{{card.value}}</span>
                     </v-progress-circular>
-                    <div class="__card_value" v-bind:class="{ '__text-red': (card.value < 0), '__text-green': (card.value > 0) }" v-if="card.type==='value'">{{card.value}} {{ currency }}</div>
+                    <div class="__card_value" v-bind:class="{ '__text-red': (card.value < 0), '__text-green': (card.value > 0) }"
+                      v-if="card.type==='value'">{{card.value}} {{ currency }}</div>
                   </v-layout>
                 </v-flex>
             </v-layout>
@@ -27,6 +28,7 @@
     </v-layout>
     <v-layout row>
       <v-flex xs12>
+        <SpendingChart :data="spendings"/>
         <FixedExpenses />
         <Spendings />
         <EditDialog />
@@ -39,12 +41,13 @@
 import Spendings from '../Spendings'
 import FixedExpenses from '../FixedExpenses'
 import EditDialog from '../dialogs/EditDialog'
+import SpendingChart from '../charts/SpendingChart'
 import voice from '../../mixins/voice'
 
 export default {
   mixins: [ voice ],
   name: 'home',
-  components: { Spendings, FixedExpenses, EditDialog },
+  components: { Spendings, FixedExpenses, EditDialog, SpendingChart },
   mounted: function () {
     console.log(this.$store.state.settings.salary)
   },
@@ -89,6 +92,9 @@ export default {
     dailyIncome: function () {
       return Math.round((this.totalMoney - this.fixedExpenses) / this.daysInMonth)
     },
+    dailySpendings: function () {
+      return Math.round(this.spendings / this.daysInMonth)
+    },
     moneyForToday: function () {
       return (this.daysToNextSalary - this.salaryDay) * this.dailyIncome + this.spendings
     },
@@ -114,8 +120,8 @@ export default {
         },
         {
           id: 4,
-          name: 'Total Spendings',
-          value: this.spendings,
+          name: 'Avg. daily spendings',
+          value: this.dailySpendings,
           type: 'value'
         }
       ]
