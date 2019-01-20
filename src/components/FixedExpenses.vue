@@ -12,35 +12,40 @@
         </v-flex>
       </v-card-title>
       <v-divider v-show="fixedExpensesList.length > 0" />
-      <v-list subheader>
-        <v-list-tile
-            v-for="(e, index) in fixedExpensesList"
-            :key="index"
-            @click="itemClick(e)"
-            >
+      <v-expansion-panel>
+        <v-expansion-panel-content>
+          <div slot="header"></div>
+          <v-list subheader>
+            <v-list-tile
+                v-for="(e, index) in fixedExpensesList"
+                :key="index"
+                @click="itemClick(e)"
+                >
 
-          <v-list-tile-content>
-              <v-list-tile-title v-html="e.name"></v-list-tile-title>
-          </v-list-tile-content>
+              <v-list-tile-content>
+                  <v-list-tile-title v-html="e.name"></v-list-tile-title>
+              </v-list-tile-content>
 
-          <v-list-tile-action>
-              <div style="color: red">- {{ e.price }} {{ e.currency }}</div>
-          </v-list-tile-action>
-        </v-list-tile>
-        <FixedExpensesDialog>
-          <v-btn
-            absolute
-            dark
-            fab
-            bottom
-            right
-            color="primary"
-            slot="activator"
-            >
-              <v-icon>add</v-icon>
-          </v-btn>
-        </FixedExpensesDialog>
-      </v-list>
+              <v-list-tile-action>
+                  <div style="color: red">- {{ e.price }} {{ e.currency }}</div>
+              </v-list-tile-action>
+            </v-list-tile>
+            <FixedExpensesDialog>
+              <v-btn
+                absolute
+                dark
+                fab
+                bottom
+                right
+                color="primary"
+                slot="activator"
+                >
+                  <v-icon>add</v-icon>
+              </v-btn>
+            </FixedExpensesDialog>
+          </v-list>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
     </v-card>
   </v-flex>
 </template>

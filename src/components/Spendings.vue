@@ -12,37 +12,42 @@
                 </v-flex>
             </v-card-title>
             <v-divider v-show="spendings.length > 0" />
-            <v-list subheader>
-                <v-list-tile
-                    v-for="(s, index) in spendings"
-                    :key="index"
-                    @click="itemClick(s)"
-                    >
+            <v-expansion-panel>
+                <v-expansion-panel-content>
+                <div slot="header"></div>
+                    <v-list subheader>
+                        <v-list-tile
+                            v-for="(s, index) in spendings"
+                            :key="index"
+                            @click="itemClick(s)"
+                            >
 
-                    <v-list-tile-content>
-                        <v-list-tile-title v-html="s.name"></v-list-tile-title>
-                        <v-list-tile-sub-title>{{ s.date }}</v-list-tile-sub-title>
-                    </v-list-tile-content>
+                            <v-list-tile-content>
+                                <v-list-tile-title v-html="s.name"></v-list-tile-title>
+                                <v-list-tile-sub-title>{{ s.date }}</v-list-tile-sub-title>
+                            </v-list-tile-content>
 
-                    <v-list-tile-action>
-                        <div style="color: red">- {{ s.price }} {{ s.currency }}</div>
-                    </v-list-tile-action>
-                </v-list-tile>
+                            <v-list-tile-action>
+                                <div style="color: red">- {{ s.price }} {{ s.currency }}</div>
+                            </v-list-tile-action>
+                        </v-list-tile>
 
-                <SpendingsDialog>
-                    <v-btn
-                        absolute
-                        dark
-                        fab
-                        bottom
-                        right
-                        color="primary"
-                        slot="activator"
-                        >
-                            <v-icon>add</v-icon>
-                    </v-btn>
-                </SpendingsDialog>
-            </v-list>
+                        <SpendingsDialog>
+                            <v-btn
+                                absolute
+                                dark
+                                fab
+                                bottom
+                                right
+                                color="primary"
+                                slot="activator"
+                                >
+                                    <v-icon>add</v-icon>
+                            </v-btn>
+                        </SpendingsDialog>
+                    </v-list>
+                </v-expansion-panel-content>
+            </v-expansion-panel>
         </v-card>
     </v-flex>
 </template>
