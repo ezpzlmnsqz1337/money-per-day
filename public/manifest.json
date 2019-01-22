@@ -1,0 +1,15 @@
+{
+  "name": "Money per day",
+  "short_name": "MPD",
+  "start_url": "index.html",
+  "display": "standalone", // fullscreen | minimal-ui
+  "theme_color": "#0476F2",
+  "background_color": "#fff",
+  "icons": [
+    {
+      "src": "/assets/logo.png", // usually kept in the static/icons folder
+      "sizes": "200x200", // enter the size of the image
+      "type": "image/png" // enter the type of the image eg: image/png,
+    }
+  ]
+}
