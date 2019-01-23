@@ -14,6 +14,14 @@ Vue.use(Vuetify)
 Vue.use(VueFire)
 Vue.use(firebase)
 
+// Initialize Cloud Firestore through Firebase
+const db = firebase.firestore()
+
+// Disable deprecated features
+db.settings({
+  timestampsInSnapshots: true
+})
+
 router.beforeEach((to, from, next) => {
   if (to.path !== '/login') {
     if (store.user) {
@@ -37,6 +45,22 @@ new Vue({
   router,
   created: function () {
     firebase.initializeApp(config)
+    firebase.auth().useDeviceLanguage()
+    firebase.firestore().enablePersistence()
+      .catch(err => {
+        if (err.code === 'failed-precondition') {
+          console.log('something wrong')
+          // Multiple tabs open, persistence can only be enabled
+          // in one tab at a a time.
+          // ...
+        } else if (err.code === 'unimplemented') {
+          console.log('something else wrong')
+          // The current browser does not support all of the
+          // features required to enable persistence
+          // ...
+        }
+      })
+    // Subsequent queries will use persistence, if it was enabled successfully
     this.authenticate()
   },
   data () {
