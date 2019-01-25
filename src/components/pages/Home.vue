@@ -53,7 +53,7 @@ export default {
   },
   data: function () {
     return {
-      currency: this.$store.state.settings.currency,
+      currency: '',
       day: new Date().getDate(),
       month: new Date().getMonth() + 1,
       year: new Date().getFullYear(),
@@ -78,7 +78,7 @@ export default {
       return new Date(this.year, this.month, 0).getDate()
     },
     spendings: function () {
-      if (!this.spendingsList) return 0
+      if (!this.spendingsList) return []
       let total = 0
 
       this.spendingsList.forEach(s => {

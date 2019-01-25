@@ -19,7 +19,7 @@ export default {
   name: 'topbar',
   data: function () {
     return {
-      user: this.$store.user,
+      user: null,
       text: 'Home'
     }
   },

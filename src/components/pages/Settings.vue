@@ -76,6 +76,7 @@ export default {
     }
   },
   mounted: function () {
+    console.log(this.$store)
   },
   data: function () {
     return {
@@ -91,8 +92,7 @@ export default {
         return parseInt(this.$store.state.settings.salaryDay)
       },
       set: function (newVal) {
-        this.$store.state.settings.salaryDay = newVal
-        this.$store.updateTimestamp()
+        this.$store.setSalaryDay(newVal)
       }
     },
     salary: {
@@ -100,8 +100,7 @@ export default {
         return parseInt(this.$store.state.settings.salary)
       },
       set: function (newVal) {
-        this.$store.state.settings.salary = newVal
-        this.$store.updateTimestamp()
+        this.$store.setSalary(parseInt(newVal))
       }
     },
     currency: {
@@ -109,8 +108,7 @@ export default {
         return this.$store.state.settings.currency
       },
       set: function (newVal) {
-        this.$store.state.settings.currency = newVal
-        this.$store.updateTimestamp()
+        this.$store.setCurrency(newVal)
       }
     }
   },

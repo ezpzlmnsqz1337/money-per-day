@@ -3,67 +3,92 @@ import {
   ELEMENT_TYPE_SPENDING
 } from '../constants'
 
-import firebase from 'firebase'
+import { db } from './DataProvider'
 
 class Store {
   constructor () {
     console.log('created')
     this.debug = true
     this.user = null
-    this.state = {
-      settings: {
-        spendings: [],
-        salaryDay: 1,
-        salary: 0,
-        fixedExpenses: [],
-        currency: 'CZK',
-        language: 'Czech'
-      },
-      timestamp: null
-    }
-    if (localStorage.state) {
-      console.log('checking localstorage')
-      const localState = JSON.parse(localStorage.state)
-      const ts = new Date(localState.timestamp)
-      if (ts > this.state.timestamp) {
-        console.log('updating from local storage')
-        this.state = { ...this.state, ...localState }
-      }
-    }
+    this.state = {}
+  }
 
-    setTimeout(() => {
-      const user = firebase.auth().currentUser
-      if (user && user.uid) {
-        console.log('checking firebase')
-        const stateRef = firebase.database().ref('users/' + user.uid + '/state')
-        stateRef.once('value', stateSnapshot => {
-          if (stateSnapshot.exists()) {
-            const ts = new Date(stateSnapshot.timestamp)
-            if (ts > this.state.timestamp) {
-              console.log('Updating from firebase')
-              this.state = { ...this.state, ...stateSnapshot }
+  init (user) {
+    console.log('User check', user)
+    if (user) {
+      console.log('User exists', user)
+      this.user = user
+
+      const userRef = db.collection('users').doc(user.uid)
+      userRef.get().then(doc => {
+        if (doc.exists) {
+          if (!doc.data().state) {
+            const state = {
+              settings: {
+                spendings: [],
+                salaryDay: 1,
+                salary: 0,
+                fixedExpenses: [],
+                currency: 'CZK',
+                language: 'Czech'
+              }
             }
+            userRef.set({ state }, { merge: true })
+          } else {
+            this.state = doc.data().state
           }
-        })
-      }
-    }, 1000)
+        }
+      })
+    }
   }
 
   setUser (user) {
     this.user = user
   }
 
-  addFixedExpense (name, price) {
-    this.state.settings.fixedExpenses.push(
-      {
-        id: this.state.settings.fixedExpenses.length + 1,
-        name,
-        price,
-        currency: this.state.settings.currency,
-        type: ELEMENT_TYPE_FIXED_EXPENSE
+  _setUserSetting (settingName, settingValue) {
+    const userRef = db.collection('users').doc(this.user.uid)
+    userRef.get().then(doc => {
+      if (doc.exists) {
+        userRef.set({
+          state: {
+            settings: {
+              [settingName]: settingValue
+            }
+          }
+        },
+        { merge: true })
       }
-    )
-    this.updateTimestamp()
+    })
+  }
+
+  setSalaryDay (salaryDay) {
+    this._setUserSetting('salaryDay', salaryDay)
+  }
+
+  setSalary (salary) {
+    this._setUserSetting('salary', salary)
+  }
+
+  setCurrency (currency) {
+    this._setUserSetting('currency', currency)
+  }
+
+  addFixedExpense (name, price) {
+    const userRef = db.collection('users').doc(this.user.uid)
+
+    userRef.get().then(doc => {
+      if (doc.exists) {
+        doc.state.settings.fixedExpenses.push({
+          name,
+          price,
+          currency: doc.state.settings.currency,
+          type: ELEMENT_TYPE_FIXED_EXPENSE
+        })
+      } else {
+        console.log('Fixed expenses does not exists')
+      }
+    })
   }
 
   removeFixedExpense (id) {
@@ -124,50 +149,22 @@ class Store {
     this.updateTimestamp()
   }
 
-  async createOrSetUser () {
-    const user = firebase.auth().currentUser
+  async createOrSetUser (user) {
+    const userRef = db.collection('users').doc(user.uid)
 
-    const userRef = firebase.database().ref('users/' + user.uid)
-    userRef.once('value', userSnapshot => {
-      const userData = {
-        uid: user.uid,
-        name: user.displayName,
-        email: user.email,
-        photoURL: user.photoURL
-      }
-
-      if (!userSnapshot.exists()) {
-        userRef.set({
-          user: userData
-        })
+    userRef.get().then(doc => {
+      if (doc.exists) {
+        this.init(user)
       } else {
-        userRef.update({
-          user: userData
+        userRef.set({
+          uid: user.uid,
+          name: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL
         })
+        this.user = user
       }
     })
-
-    const storeRef = firebase.database().ref('users/' + user.uid + '/state')
-    storeRef.once('value', storeSnapshot => {
-      if (storeSnapshot.exists()) {
-        this.state = { ...this.state, ...storeSnapshot.val() }
-        this.updateTimestamp()
-      }
-    })
-
-    this.user = {
-      uid: user.uid,
-      name: user.displayName,
-      email: user.email,
-      photoURL: user.photoURL
-    }
-  }
-
-  updateTimestamp () {
-    if (!this.state.settings.spendings || !this.state.settings.fixedExpenses) return
-    this.state.timestamp = new Date()
-    localStorage.state = JSON.stringify(this.state)
-    firebase.database().ref('users/' + this.user.uid).update({ state: this.state })
   }
 }
 

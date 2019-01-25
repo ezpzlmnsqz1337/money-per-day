@@ -1,9 +1,22 @@
+import { firebase } from '@firebase/app'
+import '@firebase/firestore'
+
 // Initialize Firebase
-export const config = {
+const config = {
   apiKey: 'AIzaSyBquJ8PawDWLNMi7u0Y9rhANoDrkxMirew',
   authDomain: 'money-per-day.firebaseapp.com',
   databaseURL: 'https://money-per-day.firebaseio.com',
   projectId: 'money-per-day',
-  storageBucket: '',
+  storageBucket: 'money-per-day.appspot.com',
   messagingSenderId: '550807968607'
 }
+
+var firebaseApp = firebase.initializeApp(config)
+
+firebase.auth().useDeviceLanguage()
+
+export const db = firebaseApp.firestore()
+db.settings({
+  timestampsInSnapshots: true
+})
+db.enablePersistence()
