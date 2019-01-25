@@ -31,28 +31,30 @@ router.beforeEach((to, from, next) => {
 
 Object.defineProperty(Vue.prototype, '$store', { value: store })
 
-/* eslint-disable no-new */
-new Vue({
-  el: '#app',
-  router,
-  created: function () {
-    this.authenticate()
-  },
-  data () {
-    return {}
-  },
-  methods: {
-    authenticate () {
-      firebase.auth().onAuthStateChanged(user => {
-        if (user) {
-          store.createOrSetUser(user)
-          this.$router.push('/home')
-        } else {
-          this.$router.push('/login')
-        }
-      })
-    }
-  },
-  components: { App },
-  template: '<App/>'
+store.ready(() => {
+  /* eslint-disable no-new */
+  new Vue({
+    el: '#app',
+    router,
+    created: function () {
+      this.authenticate()
+    },
+    data () {
+      return {}
+    },
+    methods: {
+      authenticate () {
+        firebase.auth().onAuthStateChanged(user => {
+          if (user) {
+            store.createOrSetUser(user)
+            this.$router.push('/home')
+          } else {
+            this.$router.push('/login')
+          }
+        })
+      }
+    },
+    components: { App },
+    template: '<App/>'
+  })
 })

@@ -14,9 +14,7 @@ class Store {
   }
 
   init (user) {
-    console.log('User check', user)
     if (user) {
-      console.log('User exists', user)
       this.user = user
 
       const userRef = db.collection('users').doc(user.uid)
