@@ -46,7 +46,7 @@ new Vue({
       firebase.auth().onAuthStateChanged(user => {
         if (user) {
           store.createOrSetUser(user)
-          this.$router.push('/settings')
+          this.$router.push('/home')
         } else {
           this.$router.push('/login')
         }

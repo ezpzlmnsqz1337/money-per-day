@@ -56,7 +56,6 @@ export default {
     return {
       user: null,
       settings: null,
-      fixedExpenses: [],
       days: [],
       dialog: false,
       currencies: Object.keys(currencies)
@@ -65,8 +64,7 @@ export default {
   firestore: function () {
     return {
       user: db.collection('users').doc(firebase.auth().currentUser.uid),
-      settings: db.collection('settings').doc(firebase.auth().currentUser.uid),
-      fixedExpenses: db.collection('fixedExpenses').where('uid', '==', firebase.auth().currentUser.uid)
+      settings: db.collection('settings').doc(firebase.auth().currentUser.uid)
     }
   },
   computed: {

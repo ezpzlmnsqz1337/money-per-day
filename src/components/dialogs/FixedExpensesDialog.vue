@@ -41,6 +41,9 @@
 </template>
 
 <script>
+import firebase from 'firebase'
+import { db } from '../../services/DataProvider'
+
 export default {
   data: function () {
     return {
@@ -57,7 +60,14 @@ export default {
         v => !!v || 'Price is required',
         v => /^([1-9]\d*(\.|,)\d*|0?(\.|,)\d*[1-9]\d*|[1-9]\d*)$/.test(v) || 'Price must be a number'
       ],
-      fixedExpensesList: this.$store.state.settings.fixedExpenses
+      fixedExpensesList: []
+    }
+  },
+  firestore: function () {
+    return {
+      user: db.collection('users').doc(firebase.auth().currentUser.uid),
+      settings: db.collection('settings').doc(firebase.auth().currentUser.uid),
+      fixedExpensesList: db.collection('fixedExpenses').where('uid', '==', firebase.auth().currentUser.uid)
     }
   },
   methods: {

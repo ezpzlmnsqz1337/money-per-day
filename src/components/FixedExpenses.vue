@@ -1,5 +1,5 @@
 <template>
-  <v-flex xs12 pa-0 mb-3>
+  <v-flex xs12 pa-0 mb-3 v-if="settings">
     <v-card raised hover>
       <v-card-title primary-title class="headline">
         <v-flex xs8 pa-0>
@@ -52,17 +52,31 @@
 
 <script>
 import FixedExpensesDialog from './dialogs/FixedExpensesDialog'
+import firebase from 'firebase'
+import { db } from '../services/DataProvider'
 
 export default {
   name: 'fixedExpenses',
   components: { FixedExpensesDialog },
   data () {
     return {
-      fixedExpensesList: this.$store.state.settings.fixedExpenses,
-      currency: this.$store.state.settings.currency
+      fixedExpensesList: [],
+      settings: null
+    }
+  },
+  firestore: function () {
+    return {
+      user: db.collection('users').doc(firebase.auth().currentUser.uid),
+      settings: db.collection('settings').doc(firebase.auth().currentUser.uid),
+      fixedExpensesList: db.collection('fixedExpenses').where('uid', '==', firebase.auth().currentUser.uid)
     }
   },
   computed: {
+    currency: {
+      get: function () {
+        return this.settings.currency
+      }
+    },
     total: function () {
       return this.fixedExpensesList.reduce((prev, current) => prev + parseInt(current.price), 0)
     }

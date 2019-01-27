@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 <template>
-  <v-container v-bind="{ ['grid-list-md']: true }">
+  <v-container v-bind="{ ['grid-list-md']: true }" v-if="user">
     <v-layout align-start justify-center row wrap>
       <v-flex
         v-for="card in cards"
@@ -28,7 +28,7 @@
     </v-layout>
     <v-layout row>
       <v-flex xs12>
-        <SpendingChart :data="spendings"/>
+        <SpendingChart :data="spendingsList"/>
         <FixedExpenses />
         <Spendings />
         <EditDialog />
@@ -51,89 +51,91 @@ export default {
   mixins: [ voice ],
   name: 'home',
   components: { Spendings, FixedExpenses, EditDialog, SpendingChart },
-  mounted: function () {
-    console.log('FS: ', this.$firestore.currency)
-    console.log(this.$store.state.settings.salary)
-  },
   data: function () {
     return {
+      user: null,
+      settings: null,
       currency: '',
-      day: new Date().getDate(),
-      month: new Date().getMonth() + 1,
-      year: new Date().getFullYear(),
       fixedExpensesList: [],
       spendingsList: [],
       // test
-      totalMoney: null
+      totalMoney: null,
+
+      day: new Date().getDate(),
+      month: new Date().getMonth() + 1,
+      year: new Date().getFullYear()
 
     }
   },
   firestore: function () {
     return {
-      currency: db.collection('users').doc(firebase.auth().currentUser.uid).get().sate.settings.salaryDay
+      user: db.collection('users').doc(firebase.auth().currentUser.uid),
+      settings: db.collection('settings').doc(firebase.auth().currentUser.uid),
+      fixedExpensesList: db.collection('fixedExpenses').where('uid', '==', firebase.auth().currentUser.uid),
+      spendingsList: db.collection('spendings').where('uid', '==', firebase.auth().currentUser.uid)
     }
   },
   computed: {
-  //   fixedExpenses: function () {
-  //     let total = 0
-  //     this.fixedExpensesList.forEach(expense => {
-  //       total += parseInt(expense.price)
-  //     })
-  //     return total
-  //   },
-  //   daysInMonth: function () {
-  //     console.log(new Date(this.year, this.month, 0).getDate())
-  //     return new Date(this.year, this.month, 0).getDate()
-  //   },
-  //   spendings: function () {
-  //     if (!this.spendingsList) return []
-  //     let total = 0
+    fixedExpenses: function () {
+      let total = 0
+      this.fixedExpensesList.forEach(expense => {
+        total += parseInt(expense.price)
+      })
+      return total
+    },
+    daysInMonth: function () {
+      console.log(new Date(this.year, this.month, 0).getDate())
+      return new Date(this.year, this.month, 0).getDate()
+    },
+    spendings: function () {
+      if (!this.spendingsList) return []
+      let total = 0
 
-  //     this.spendingsList.forEach(s => {
-  //       total += parseInt(s.price)
-  //     })
-  //     return total * -1
-  //   },
-  //   daysToNextSalary: function () {
-  //     return (this.daysInMonth + this.salaryDay) - this.day
-  //   },
-  //   dailyIncome: function () {
-  //     return Math.round((this.totalMoney - this.fixedExpenses) / this.daysInMonth)
-  //   },
-  //   dailySpendings: function () {
-  //     return Math.round(this.spendings / this.daysInMonth)
-  //   },
-  //   moneyForToday: function () {
-  //     return (this.daysToNextSalary - this.salaryDay) * this.dailyIncome + this.spendings
-  //   },
-  //   cards: function () {
-  //     return [
-  //       {
-  //         id: 1,
-  //         name: 'Days to next salary',
-  //         value: this.daysToNextSalary,
-  //         type: 'circle'
-  //       },
-  //       {
-  //         id: 2,
-  //         name: 'Daily income',
-  //         value: this.dailyIncome,
-  //         type: 'value'
-  //       },
-  //       {
-  //         id: 3,
-  //         name: 'Money for today',
-  //         value: this.moneyForToday,
-  //         type: 'value'
-  //       },
-  //       {
-  //         id: 4,
-  //         name: 'Avg. daily spendings',
-  //         value: this.dailySpendings,
-  //         type: 'value'
-  //       }
-  //     ]
-  //   }
+      this.spendingsList.forEach(s => {
+        total += parseInt(s.price)
+      })
+      return total * -1
+    },
+    daysToNextSalary: function () {
+      return (this.daysInMonth + this.salaryDay) - this.day
+    },
+    dailyIncome: function () {
+      return Math.round((this.totalMoney - this.fixedExpenses) / this.daysInMonth)
+    },
+    dailySpendings: function () {
+      return Math.round(this.spendings / this.daysInMonth)
+    },
+    moneyForToday: function () {
+      return (this.daysToNextSalary - this.salaryDay) * this.dailyIncome + this.spendings
+    },
+    cards: function () {
+      return [
+        {
+          id: 1,
+          name: 'Days to next salary',
+          value: this.daysToNextSalary,
+          type: 'circle'
+        },
+        {
+          id: 2,
+          name: 'Daily income',
+          value: this.dailyIncome,
+          type: 'value'
+        },
+        {
+          id: 3,
+          name: 'Money for today',
+          value: this.moneyForToday,
+          type: 'value'
+        },
+        {
+          id: 4,
+          name: 'Avg. daily spendings',
+          value: this.dailySpendings,
+          type: 'value'
+        }
+      ]
+    }
   },
   methods: {
     daysToNextSalaryColor: function (days) {

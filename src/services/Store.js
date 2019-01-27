@@ -3,6 +3,7 @@ import {
   ELEMENT_TYPE_SPENDING
 } from '../constants'
 
+import firebase from 'firebase'
 import { db } from './DataProvider'
 
 class Store {
@@ -113,15 +114,19 @@ class Store {
   }
 
   addSpending (name, price) {
-    this.state.settings.spendings.push({
-      id: this.state.settings.spendings.length + 1,
+    const uid = firebase.auth().currentUser.uid
+    const currency = db.collection('settings').doc(uid).currency
+
+    console.log('Currency: ', currency)
+
+    db.collection('spendings').add({
+      uid,
       name,
       price,
-      currency: this.state.settings.currency,
-      date: new Date().toLocaleDateString(),
+      currency,
+      date: new Date(),
       type: ELEMENT_TYPE_SPENDING
     })
-    this.updateTimestamp()
   }
 
   removeSpending (id) {

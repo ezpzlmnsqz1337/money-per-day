@@ -1,5 +1,5 @@
 <template>
-    <v-flex xs12 pa-0 mb-3>
+    <v-flex xs12 pa-0 mb-3 v-if="settings">
         <v-card raised hover >
             <v-card-title primary-title class="headline">
                 <v-flex xs8 pa-0>
@@ -11,13 +11,13 @@
                     </v-layout>
                 </v-flex>
             </v-card-title>
-            <v-divider v-show="spendings.length > 0" />
+            <v-divider v-show="spendingsList.length > 0" />
             <v-expansion-panel>
                 <v-expansion-panel-content>
                 <div slot="header"></div>
                     <v-list subheader>
                         <v-list-tile
-                            v-for="(s, index) in spendings"
+                            v-for="(s, index) in spendingsList"
                             :key="index"
                             @click="itemClick(s)"
                             >
@@ -54,19 +54,33 @@
 
 <script>
 import SpendingsDialog from './dialogs/SpendingsDialog'
+import firebase from 'firebase'
+import { db } from '../services/DataProvider'
 
 export default {
   name: 'spendings',
   components: { SpendingsDialog },
   data () {
     return {
-      spendings: this.$store.state.settings.spendings,
-      currency: this.$store.state.settings.currency
+      spendingsList: [],
+      settings: null
+    }
+  },
+  firestore: function () {
+    return {
+      user: db.collection('users').doc(firebase.auth().currentUser.uid),
+      settings: db.collection('settings').doc(firebase.auth().currentUser.uid),
+      spendingsList: db.collection('spendings').where('uid', '==', firebase.auth().currentUser.uid)
     }
   },
   computed: {
+    currency: {
+      get: function () {
+        return this.settings.currency
+      }
+    },
     total: function () {
-      return this.spendings.reduce((prev, current) => prev + parseInt(current.price), 0)
+      return this.spendingsList.reduce((prev, current) => prev + parseInt(current.price), 0)
     }
   },
   methods: {

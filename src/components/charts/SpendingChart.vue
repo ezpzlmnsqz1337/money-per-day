@@ -1,5 +1,5 @@
 <template>
-  <v-flex xs12 pa-0 mb-3>
+  <v-flex xs12 pa-0 mb-3 v-if="data.length > 0">
     <v-card raised hover>
       <v-card-title primary-title>
         <v-flex xs12 class="headline">Spending chart</v-flex>
@@ -33,13 +33,16 @@ export default {
   },
   computed: {
     values: function () {
+      if (this.data.length === 0) return
       const values = this.data.map(item => {
+        console.log(item.price)
         return parseInt(item.price)
       })
       console.log('Values: ', values)
       return values
     },
     labels: function () {
+      if (this.data.length === 0) return
       const labels = this.data.map(item => {
         return item.name
       })

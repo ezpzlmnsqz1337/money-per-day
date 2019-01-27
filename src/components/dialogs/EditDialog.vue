@@ -51,6 +51,8 @@ import {
   ELEMENT_TYPE_SPENDING,
   ELEMENT_TYPE_FIXED_EXPENSE
 } from '../../constants.js'
+import firebase from 'firebase'
+import { db } from '../../services/DataProvider'
 
 export default {
   created: function () {
@@ -72,8 +74,14 @@ export default {
         v => !!v || 'Price is required',
         v => /^([1-9]\d*(\.|,)\d*|0?(\.|,)\d*[1-9]\d*|[1-9]\d*)$/.test(v) || 'Price must be a number'
       ],
-      spendings: this.$store.state.settings.spendings,
-      fixedExpenses: this.$store.state.settings.fixedExpenses
+      fixedExpensesList: []
+    }
+  },
+  firestore: function () {
+    return {
+      user: db.collection('users').doc(firebase.auth().currentUser.uid),
+      settings: db.collection('settings').doc(firebase.auth().currentUser.uid),
+      fixedExpensesList: db.collection('fixedExpenses').where('uid', '==', firebase.auth().currentUser.uid)
     }
   },
   methods: {
