@@ -1,5 +1,5 @@
 <template>
-  <v-layout justify-center>
+  <v-layout justify-center v-if="user">
     <div>
       <div class="__header">
         <v-avatar size="16rem">
@@ -27,23 +27,28 @@
 <script>
 import firebase from 'firebase'
 import { languages } from 'countries-list'
+import { db } from '../../services/DataProvider'
 
 export default {
   name: 'profile',
   data () {
     return {
-      user: this.$store.user,
+      user: null,
       languages: Object.keys(languages).map(lang => lang.toUpperCase())
+    }
+  },
+  firestore: function () {
+    return {
+      user: db.collection('users').doc(firebase.auth().currentUser.uid)
     }
   },
   computed: {
     language: {
       get: function () {
-        return this.$store.state.settings.language
+        return 'CZ'
       },
       set: function (newVal) {
-        this.$store.state.settings.language = newVal
-        firebase.database().ref('users/' + this.user.uid).update({ state: this.$store.state })
+        console.log('Set language')
       }
     }
   },

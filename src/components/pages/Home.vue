@@ -44,11 +44,15 @@ import EditDialog from '../dialogs/EditDialog'
 import SpendingChart from '../charts/SpendingChart'
 import voice from '../../mixins/voice'
 
+import firebase from 'firebase'
+import { db } from '../../services/DataProvider'
+
 export default {
   mixins: [ voice ],
   name: 'home',
   components: { Spendings, FixedExpenses, EditDialog, SpendingChart },
   mounted: function () {
+    console.log('FS: ', this.$firestore.currency)
     console.log(this.$store.state.settings.salary)
   },
   data: function () {
@@ -57,75 +61,79 @@ export default {
       day: new Date().getDate(),
       month: new Date().getMonth() + 1,
       year: new Date().getFullYear(),
-      fixedExpensesList: this.$store.state.settings.fixedExpenses,
-      spendingsList: this.$store.state.settings.spendings,
+      fixedExpensesList: [],
+      spendingsList: [],
       // test
-      totalMoney: this.$store.state.settings.salary,
-      salaryDay: this.$store.state.settings.salaryDay
+      totalMoney: null
 
     }
   },
-  computed: {
-    fixedExpenses: function () {
-      let total = 0
-      this.fixedExpensesList.forEach(expense => {
-        total += parseInt(expense.price)
-      })
-      return total
-    },
-    daysInMonth: function () {
-      console.log(new Date(this.year, this.month, 0).getDate())
-      return new Date(this.year, this.month, 0).getDate()
-    },
-    spendings: function () {
-      if (!this.spendingsList) return []
-      let total = 0
-
-      this.spendingsList.forEach(s => {
-        total += parseInt(s.price)
-      })
-      return total * -1
-    },
-    daysToNextSalary: function () {
-      return (this.daysInMonth + this.salaryDay) - this.day
-    },
-    dailyIncome: function () {
-      return Math.round((this.totalMoney - this.fixedExpenses) / this.daysInMonth)
-    },
-    dailySpendings: function () {
-      return Math.round(this.spendings / this.daysInMonth)
-    },
-    moneyForToday: function () {
-      return (this.daysToNextSalary - this.salaryDay) * this.dailyIncome + this.spendings
-    },
-    cards: function () {
-      return [
-        {
-          id: 1,
-          name: 'Days to next salary',
-          value: this.daysToNextSalary,
-          type: 'circle'
-        },
-        {
-          id: 2,
-          name: 'Daily income',
-          value: this.dailyIncome,
-          type: 'value'
-        },
-        {
-          id: 3,
-          name: 'Money for today',
-          value: this.moneyForToday,
-          type: 'value'
-        },
-        {
-          id: 4,
-          name: 'Avg. daily spendings',
-          value: this.dailySpendings,
-          type: 'value'
-        }
-      ]
+  firestore: function () {
+    return {
+      currency: db.collection('users').doc(firebase.auth().currentUser.uid).get().sate.settings.salaryDay
     }
+  },
+  computed: {
+  //   fixedExpenses: function () {
+  //     let total = 0
+  //     this.fixedExpensesList.forEach(expense => {
+  //       total += parseInt(expense.price)
+  //     })
+  //     return total
+  //   },
+  //   daysInMonth: function () {
+  //     console.log(new Date(this.year, this.month, 0).getDate())
+  //     return new Date(this.year, this.month, 0).getDate()
+  //   },
+  //   spendings: function () {
+  //     if (!this.spendingsList) return []
+  //     let total = 0
+
+  //     this.spendingsList.forEach(s => {
+  //       total += parseInt(s.price)
+  //     })
+  //     return total * -1
+  //   },
+  //   daysToNextSalary: function () {
+  //     return (this.daysInMonth + this.salaryDay) - this.day
+  //   },
+  //   dailyIncome: function () {
+  //     return Math.round((this.totalMoney - this.fixedExpenses) / this.daysInMonth)
+  //   },
+  //   dailySpendings: function () {
+  //     return Math.round(this.spendings / this.daysInMonth)
+  //   },
+  //   moneyForToday: function () {
+  //     return (this.daysToNextSalary - this.salaryDay) * this.dailyIncome + this.spendings
+  //   },
+  //   cards: function () {
+  //     return [
+  //       {
+  //         id: 1,
+  //         name: 'Days to next salary',
+  //         value: this.daysToNextSalary,
+  //         type: 'circle'
+  //       },
+  //       {
+  //         id: 2,
+  //         name: 'Daily income',
+  //         value: this.dailyIncome,
+  //         type: 'value'
+  //       },
+  //       {
+  //         id: 3,
+  //         name: 'Money for today',
+  //         value: this.moneyForToday,
+  //         type: 'value'
+  //       },
+  //       {
+  //         id: 4,
+  //         name: 'Avg. daily spendings',
+  //         value: this.dailySpendings,
+  //         type: 'value'
+  //       }
+  //     ]
+  //   }
   },
   methods: {
     daysToNextSalaryColor: function (days) {

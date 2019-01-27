@@ -1,5 +1,5 @@
 <template>
-  <v-layout row>
+  <v-layout row v-if="user && settings">
       <Header text="Settings"></Header>
       <v-container fluid>
         <v-layout row wrap>
@@ -20,35 +20,6 @@
               type="number"
               v-model="salary" />
           </v-flex>
-          <v-flex xs6>
-            <v-subheader>Fixed expenses</v-subheader>
-          </v-flex>
-          <v-flex xs6>
-            <v-list dense>
-              <v-list-tile v-for="(expense, index) in fixedExpensesList" :key="index">
-                <v-list-tile-content>
-                  <v-list-tile-title v-text="expense.name" />
-                </v-list-tile-content>
-
-                <v-list-tile-action>
-                  <v-list-tile-action-text>{{ expense.price }} {{ currency }}</v-list-tile-action-text>
-                </v-list-tile-action>
-
-                <v-list-tile-action>
-                  <v-icon @click="removeExpense(expense.id)"
-                    class="__delete_button">delete</v-icon>
-                </v-list-tile-action>
-              </v-list-tile>
-            </v-list>
-            <v-flex class="text-xs-center" xs2>
-              <FixedExpensesDialog>
-                <v-btn slot="activator" color="primary">
-                  <v-icon>add</v-icon>
-                  Add
-                </v-btn>
-              </FixedExpensesDialog>
-            </v-flex>
-          </v-flex>
 
           <v-flex xs6>
             <v-subheader>Currency:</v-subheader>
@@ -56,7 +27,10 @@
           <v-flex xs6>
             <v-select
               :items="currencies"
-              v-model="currency" />
+              v-model="currency"/>
+          </v-flex>
+          <v-flex xs6 v-for="(fe, index) in fixedExpenses" :key="index">
+            {{ fe.name + fe.price }}
           </v-flex>
         </v-layout>
       </v-container>
@@ -64,12 +38,12 @@
 </template>
 
 <script>
-import FixedExpensesDialog from '../dialogs/FixedExpensesDialog'
 import { currencies } from '../../assets/currencies'
+import firebase from 'firebase'
+import { db } from '../../services/DataProvider'
 
 export default {
   name: 'settings',
-  components: { FixedExpensesDialog },
   created: function () {
     for (let i = 1; i < 32; i++) {
       this.days.push(i)
@@ -80,41 +54,59 @@ export default {
   },
   data: function () {
     return {
+      user: null,
+      settings: null,
+      fixedExpenses: [],
       days: [],
-      fixedExpensesList: this.$store.state.settings.fixedExpenses,
       dialog: false,
       currencies: Object.keys(currencies)
+    }
+  },
+  firestore: function () {
+    return {
+      user: db.collection('users').doc(firebase.auth().currentUser.uid),
+      settings: db.collection('settings').doc(firebase.auth().currentUser.uid),
+      fixedExpenses: db.collection('fixedExpenses').where('uid', '==', firebase.auth().currentUser.uid)
     }
   },
   computed: {
     salaryDay: {
       get: function () {
-        return parseInt(this.$store.state.settings.salaryDay)
+        return this.settings.salaryDay
       },
       set: function (newVal) {
-        this.$store.setSalaryDay(newVal)
+        db.collection('settings').doc(this.user.uid).set({ salaryDay: parseInt(newVal) }, { merge: true })
+          .then(() => console.log('Salary day updated'))
+          .catch(err => console.log('Salary day not updated: ', err))
       }
     },
     salary: {
       get: function () {
-        return parseInt(this.$store.state.settings.salary)
+        return this.settings.salary
       },
       set: function (newVal) {
-        this.$store.setSalary(parseInt(newVal))
+        db.collection('settings').doc(this.user.uid).set({ salary: parseInt(newVal) }, { merge: true })
+          .then(() => console.log('Salary updated'))
+          .catch(err => console.log('Salary not updated: ', err))
       }
     },
     currency: {
       get: function () {
-        return this.$store.state.settings.currency
+        return this.settings.currency
       },
       set: function (newVal) {
-        this.$store.setCurrency(newVal)
+        db.collection('settings').doc(this.user.uid).set({ currency: newVal }, { merge: true })
+          .then(() => console.log('Currency updated'))
+          .catch(err => console.log('Currency not updated: ', err))
       }
     }
   },
   methods: {
-    removeExpense: function (id) {
-      this.$store.removeFixedExpense(id)
+    updateSettings () {
+      console.log('Updating setttings: ', this.settings.salaryDay)
+      setTimeout(() => {
+        console.log('Updating setttings: ', this.settings.salaryDay)
+      }, 300)
     }
   }
 }

@@ -4,14 +4,14 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import App from './App'
 import router from './router'
-import VueFirestore from 'vue-firestore'
+import VueFire from 'vuefire'
 import firebase from 'firebase'
 import store from './services/Store'
 
 Vue.config.productionTip = false
 
 Vue.use(Vuetify)
-Vue.use(VueFirestore)
+Vue.use(VueFire)
 Vue.use(firebase)
 
 router.beforeEach((to, from, next) => {
@@ -31,30 +31,28 @@ router.beforeEach((to, from, next) => {
 
 Object.defineProperty(Vue.prototype, '$store', { value: store })
 
-store.ready(() => {
-  /* eslint-disable no-new */
-  new Vue({
-    el: '#app',
-    router,
-    created: function () {
-      this.authenticate()
-    },
-    data () {
-      return {}
-    },
-    methods: {
-      authenticate () {
-        firebase.auth().onAuthStateChanged(user => {
-          if (user) {
-            store.createOrSetUser(user)
-            this.$router.push('/home')
-          } else {
-            this.$router.push('/login')
-          }
-        })
-      }
-    },
-    components: { App },
-    template: '<App/>'
-  })
+/* eslint-disable no-new */
+new Vue({
+  el: '#app',
+  router,
+  created: function () {
+    this.authenticate()
+  },
+  data () {
+    return {}
+  },
+  methods: {
+    authenticate () {
+      firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+          store.createOrSetUser(user)
+          this.$router.push('/settings')
+        } else {
+          this.$router.push('/login')
+        }
+      })
+    }
+  },
+  components: { App },
+  template: '<App/>'
 })
