@@ -46,11 +46,38 @@ export default {
 
       csvParse(this.csvText, { delimiter: ';' }, (err, output) => {
         if (!err) {
-          console.log(output)
+          this.addItemsToDatabase(output)
         } else {
           console.log('Error parsing csv text!', err)
         }
       })
+    },
+    addItemsToDatabase: function (csvItems) {
+      const items = []
+      for (let i = 1; i < csvItems.length; i++) {
+        const row = csvItems[i]
+        // price
+        let price = parseFloat(row[13].replace(',', '.').replace(' ', ''))
+        console.log('Price: ', row[13])
+        // skip if we get income instead of spending
+        if (price > 0) continue
+        // else
+        price = -1 * price
+
+        // date
+        let date = row[1].split(' ')
+        date = date[0].split('.')
+        date = new Date(date[2], date[1] - 1, date[0])
+        // name
+        let name = row[8] ? row[8] : row[7] + ': ' + row[6]
+
+        // currency
+        let currency = row[14]
+        items.push({ name, price, date, currency })
+      }
+      if (items) {
+        this.$store.addSpendingsImport(items)
+      }
     }
   }
 }

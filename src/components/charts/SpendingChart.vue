@@ -16,7 +16,7 @@
           auto-draw
         >
           <template slot="label" slot-scope="item">
-            {{ item.value }}
+            <span>{{ item.value }}</span>
           </template>
         </v-sparkline>
       </v-flex>

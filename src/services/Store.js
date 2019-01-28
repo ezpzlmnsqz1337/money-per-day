@@ -119,6 +119,28 @@ class Store {
     )
   }
 
+  addSpendingsImport (items) {
+    const uid = firebase.auth().currentUser.uid
+
+    const batch = db.batch()
+
+    items.forEach(i => {
+      const spendingsRef = db.collection('spendings').doc()
+      batch.set(spendingsRef, {
+        uid,
+        name: i.name,
+        price: parseFloat(i.price),
+        currency: i.currency,
+        date: i.date,
+        type: ELEMENT_TYPE_SPENDING
+      })
+    })
+    // Commit the batch
+    batch.commit().then(() => {
+      console.log(items.length + ' items have been imported.')
+    })
+  }
+
   removeSpending (id) {
     db.collection('spendings').doc(id).delete().then(() => console.log('Spending deleted'))
       .catch(err => console.log('Error while deleting spending. ', err))

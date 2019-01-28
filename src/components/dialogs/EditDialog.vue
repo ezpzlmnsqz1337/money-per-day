@@ -69,7 +69,7 @@ export default {
       itemEditFormValid: false,
       nameRules: [
         v => !!v || 'Item name is required',
-        v => v.length <= 10 || 'Name must be less than 10 characters'
+        v => v.length <= 50 || 'Name must be less than 10 characters'
       ],
       priceRules: [
         v => !!v || 'Price is required',
