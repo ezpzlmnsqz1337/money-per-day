@@ -51,12 +51,18 @@ export default {
         },
         {
           id: 2,
+          title: 'Statistics',
+          icon: 'bar_chart',
+          route: '/statistics'
+        },
+        {
+          id: 3,
           title: 'Settings',
           icon: 'settings',
           route: '/settings'
         },
         {
-          id: 3,
+          id: 4,
           title: 'Profile',
           icon: 'account_circle',
           route: '/profile'

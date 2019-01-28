@@ -37,7 +37,6 @@ export default {
       const values = this.data.map(item => {
         return -1 * parseInt(item.price)
       })
-      console.log('Values: ', values)
       return values
     },
     labels: function () {
@@ -45,7 +44,6 @@ export default {
       const labels = this.data.map(item => {
         return item.name
       })
-      console.log('Labels: ', labels)
       return labels
     }
   }

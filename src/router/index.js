@@ -4,6 +4,7 @@ import Login from '@/components/pages/Login'
 import Home from '@/components/pages/Home'
 import Profile from '@/components/pages/Profile'
 import Settings from '@/components/pages/Settings'
+import Statistics from '@/components/pages/Statistics'
 import 'vuetify/dist/vuetify.min.css' // Ensure you are using css-loader
 
 Vue.use(Router)
@@ -18,6 +19,14 @@ export default new Router({
       path: '/home',
       name: 'Home',
       component: Home,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/statistics',
+      name: 'Statistics',
+      component: Statistics,
       meta: {
         requiresAuth: true
       }

@@ -58,7 +58,6 @@ export default {
         const row = csvItems[i]
         // price
         let price = parseFloat(row[13].replace(',', '.').replace(' ', ''))
-        console.log('Price: ', row[13])
         // skip if we get income instead of spending
         if (price > 0) continue
         // else

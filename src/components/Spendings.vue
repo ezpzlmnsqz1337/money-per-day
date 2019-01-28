@@ -12,7 +12,7 @@
                 </v-flex>
             </v-card-title>
             <v-divider v-show="spendingsList.length > 0" />
-            <v-expansion-panel>
+            <v-expansion-panel :value="1">
                 <v-expansion-panel-content>
                 <div slot="header"></div>
                     <v-list subheader>
