@@ -16,7 +16,4 @@ var firebaseApp = firebase.initializeApp(config)
 firebase.auth().useDeviceLanguage()
 
 export const db = firebaseApp.firestore()
-db.settings({
-  timestampsInSnapshots: true
-})
 db.enablePersistence()

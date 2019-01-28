@@ -7,42 +7,44 @@ import firebase from 'firebase'
 import { db } from './DataProvider'
 
 class Store {
-  constructor () {
-    console.log('created')
-    this.debug = true
-    this.user = null
-    this.state = {}
-  }
-
   init (user) {
-    if (user) {
-      this.user = user
-
-      const userRef = db.collection('users').doc(user.uid)
-      userRef.get().then(doc => {
-        if (doc.exists) {
-          if (!doc.data().state) {
-            const state = {
-              settings: {
-                spendings: [],
-                salaryDay: 1,
-                salary: 0,
-                fixedExpenses: [],
-                currency: 'CZK',
-                language: 'Czech'
-              }
+    const userRef = db.collection('users').doc(user.uid)
+    userRef.get().then(doc => {
+      if (doc.exists) {
+        if (!doc.data().state) {
+          const state = {
+            settings: {
+              spendings: [],
+              salaryDay: 1,
+              salary: 0,
+              fixedExpenses: [],
+              currency: 'CZK',
+              language: 'Czech'
             }
-            userRef.set({ state }, { merge: true })
-          } else {
-            this.state = doc.data().state
           }
+          userRef.set({ state }, { merge: true })
+        } else {
+          this.state = doc.data().state
         }
-      })
-    }
+      }
+    })
   }
 
-  setUser (user) {
-    this.user = user
+  async createOrSetUser (user) {
+    const userRef = db.collection('users').doc(user.uid)
+
+    userRef.get().then(doc => {
+      if (doc.exists) {
+        this.init(user)
+      } else {
+        userRef.set({
+          uid: user.uid,
+          name: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL
+        })
+      }
+    })
   }
 
   _setUserSetting (settingName, settingValue) {
@@ -62,11 +64,11 @@ class Store {
   }
 
   setSalaryDay (salaryDay) {
-    this._setUserSetting('salaryDay', salaryDay)
+    this._setUserSetting('salaryDay', parseInt(salaryDay))
   }
 
   setSalary (salary) {
-    this._setUserSetting('salary', salary)
+    this._setUserSetting('salary', parseInt(salary))
   }
 
   setCurrency (currency) {
@@ -74,100 +76,56 @@ class Store {
   }
 
   addFixedExpense (name, price) {
-    const userRef = db.collection('users').doc(this.user.uid)
+    const uid = firebase.auth().currentUser.uid
+    db.collection('settings').doc(uid).get().then(
+      snapshot => {
+        const currency = snapshot.data().currency
 
-    userRef.get().then(doc => {
-      if (doc.exists) {
-        doc.state.settings.fixedExpenses.push({
+        db.collection('fixedExpenses').add({
+          uid,
           name,
-          price,
-          currency: doc.state.settings.currency,
+          price: parseFloat(price),
+          currency,
           type: ELEMENT_TYPE_FIXED_EXPENSE
         })
-      } else {
-        console.log('Fixed expenses does not exists')
       }
-    })
+    )
   }
 
   removeFixedExpense (id) {
-    const expenses = this.state.settings.fixedExpenses
-    for (let i = 0; i < expenses.length; i++) {
-      if (expenses[i].id === id) {
-        expenses.splice(expenses.indexOf(expenses[i]), 1)
-        break
-      }
-    }
-    this.updateTimestamp()
+    db.collection('fixedExpenses').doc(id).delete().then(() => console.log('Fixed expense deleted'))
+      .catch(err => console.log('Error while deleting fixed expense. ', err))
   }
 
   editFixedExpense (id, name, price) {
-    const expenses = this.state.settings.fixedExpenses
-    for (let i = 0; i < expenses.length; i++) {
-      if (expenses[i].id === id) {
-        expenses[i].name = name
-        expenses[i].price = price
-        break
-      }
-    }
-    this.updateTimestamp()
+    db.collection('fixedExpenses').doc(id).update({ name, price: parseFloat(price) })
   }
 
   addSpending (name, price) {
     const uid = firebase.auth().currentUser.uid
-    const currency = db.collection('settings').doc(uid).currency
+    db.collection('settings').doc(uid).get().then(
+      snapshot => {
+        const currency = snapshot.data().currency
 
-    console.log('Currency: ', currency)
-
-    db.collection('spendings').add({
-      uid,
-      name,
-      price,
-      currency,
-      date: new Date(),
-      type: ELEMENT_TYPE_SPENDING
-    })
+        db.collection('spendings').add({
+          uid,
+          name,
+          price: parseFloat(price),
+          currency,
+          date: new Date(),
+          type: ELEMENT_TYPE_SPENDING
+        })
+      }
+    )
   }
 
   removeSpending (id) {
-    const spendings = this.state.settings.spendings
-    for (let i = 0; i < spendings.length; i++) {
-      if (spendings[i].id === id) {
-        spendings.splice(spendings.indexOf(spendings[i]), 1)
-        break
-      }
-    }
-    this.updateTimestamp()
+    db.collection('spendings').doc(id).delete().then(() => console.log('Spending deleted'))
+      .catch(err => console.log('Error while deleting spending. ', err))
   }
 
   editSpending (id, name, price) {
-    const spendings = this.state.settings.spendings
-    for (let i = 0; i < spendings.length; i++) {
-      if (spendings[i].id === id) {
-        spendings[i].name = name
-        spendings[i].price = price
-        break
-      }
-    }
-    this.updateTimestamp()
-  }
-
-  async createOrSetUser (user) {
-    const userRef = db.collection('users').doc(user.uid)
-
-    userRef.get().then(doc => {
-      if (doc.exists) {
-        this.init(user)
-      } else {
-        userRef.set({
-          uid: user.uid,
-          name: user.displayName,
-          email: user.email,
-          photoURL: user.photoURL
-        })
-        this.user = user
-      }
-    })
+    db.collection('spendings').doc(id).update({ name, price: parseFloat(price) })
   }
 }
 

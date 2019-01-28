@@ -29,9 +29,6 @@
               :items="currencies"
               v-model="currency"/>
           </v-flex>
-          <v-flex xs6 v-for="(fe, index) in fixedExpenses" :key="index">
-            {{ fe.name + fe.price }}
-          </v-flex>
         </v-layout>
       </v-container>
   </v-layout>

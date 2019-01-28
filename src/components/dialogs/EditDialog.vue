@@ -57,6 +57,7 @@ import { db } from '../../services/DataProvider'
 export default {
   created: function () {
     this.$root.$on('showEditDialog', item => {
+      console.log(item)
       this.item = item
       this.dialog = true
     })

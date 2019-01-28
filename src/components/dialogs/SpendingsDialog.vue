@@ -4,10 +4,10 @@
 
       <v-card>
           <v-card-title
-          class="headline grey lighten-2"
-          primary-title
-          @click="addSpending">
-          Add spending
+            class="headline grey lighten-2"
+            primary-title
+            @click="addSpending">
+            Add spending
           </v-card-title>
 
           <v-form v-model="addSpendingFormValid" ref="form">

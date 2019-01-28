@@ -15,7 +15,7 @@ import Drawer from './components/Drawer.vue'
 
 export default {
   name: 'App',
-  data () {
+  data: function () {
     return {
     }
   },

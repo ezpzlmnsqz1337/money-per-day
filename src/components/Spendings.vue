@@ -24,13 +24,27 @@
 
                             <v-list-tile-content>
                                 <v-list-tile-title v-html="s.name"></v-list-tile-title>
-                                <v-list-tile-sub-title>{{ s.date }}</v-list-tile-sub-title>
+                                <v-list-tile-sub-title>{{ s.date.toDate().toLocaleDateString() }}</v-list-tile-sub-title>
                             </v-list-tile-content>
 
                             <v-list-tile-action>
                                 <div style="color: red">- {{ s.price }} {{ s.currency }}</div>
                             </v-list-tile-action>
                         </v-list-tile>
+
+                        <ImportCSV>
+                            <v-btn
+                                absolute
+                                dark
+                                fab
+                                bottom
+                                left
+                                color="#5E35B1"
+                                slot="activator"
+                                >
+                                    <v-icon>import_export</v-icon>
+                            </v-btn>
+                        </ImportCSV>
 
                         <SpendingsDialog>
                             <v-btn
@@ -54,13 +68,14 @@
 
 <script>
 import SpendingsDialog from './dialogs/SpendingsDialog'
+import ImportCSV from './import/ImportCSV'
 import firebase from 'firebase'
 import { db } from '../services/DataProvider'
 
 export default {
   name: 'spendings',
-  components: { SpendingsDialog },
-  data () {
+  components: { SpendingsDialog, ImportCSV },
+  data: function () {
     return {
       spendingsList: [],
       settings: null
@@ -70,7 +85,7 @@ export default {
     return {
       user: db.collection('users').doc(firebase.auth().currentUser.uid),
       settings: db.collection('settings').doc(firebase.auth().currentUser.uid),
-      spendingsList: db.collection('spendings').where('uid', '==', firebase.auth().currentUser.uid)
+      spendingsList: db.collection('spendings').where('uid', '==', firebase.auth().currentUser.uid).orderBy('date')
     }
   },
   computed: {
@@ -84,7 +99,7 @@ export default {
     }
   },
   methods: {
-    itemClick (item) {
+    itemClick: function (item) {
       this.$root.$emit('showEditDialog', item)
     }
   }

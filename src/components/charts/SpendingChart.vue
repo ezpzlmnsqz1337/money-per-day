@@ -1,5 +1,5 @@
 <template>
-  <v-flex xs12 pa-0 mb-3 v-if="data.length > 0">
+  <v-flex xs12 pa-0 mb-3 v-if="data && data.length > 1">
     <v-card raised hover>
       <v-card-title primary-title>
         <v-flex xs12 class="headline">Spending chart</v-flex>
@@ -8,15 +8,15 @@
         <v-sparkline
           :value="values"
           :labels="labels"
-          :gradient="['red']"
-          :smooth="true"
+          color='red'
+          smooth
           padding="24"
-          line-width="2"
+          line-width="1"
           stroke-linecap="round"
           auto-draw
         >
           <template slot="label" slot-scope="item">
-            <span class="caption">${{ item.value }}</span>
+            {{ item.value }}
           </template>
         </v-sparkline>
       </v-flex>
@@ -35,8 +35,7 @@ export default {
     values: function () {
       if (this.data.length === 0) return
       const values = this.data.map(item => {
-        console.log(item.price)
-        return parseInt(item.price)
+        return -1 * parseInt(item.price)
       })
       console.log('Values: ', values)
       return values

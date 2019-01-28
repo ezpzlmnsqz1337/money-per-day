@@ -38,7 +38,7 @@ new Vue({
   created: function () {
     this.authenticate()
   },
-  data () {
+  data: function () {
     return {}
   },
   methods: {

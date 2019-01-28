@@ -58,8 +58,6 @@ export default {
       currency: '',
       fixedExpensesList: [],
       spendingsList: [],
-      // test
-      totalMoney: null,
 
       day: new Date().getDate(),
       month: new Date().getMonth() + 1,
@@ -71,11 +69,19 @@ export default {
     return {
       user: db.collection('users').doc(firebase.auth().currentUser.uid),
       settings: db.collection('settings').doc(firebase.auth().currentUser.uid),
-      fixedExpensesList: db.collection('fixedExpenses').where('uid', '==', firebase.auth().currentUser.uid),
-      spendingsList: db.collection('spendings').where('uid', '==', firebase.auth().currentUser.uid)
+      fixedExpensesList: db.collection('fixedExpenses').where('uid', '==', firebase.auth().currentUser.uid).orderBy('price'),
+      spendingsList: db.collection('spendings').where('uid', '==', firebase.auth().currentUser.uid).orderBy('date')
     }
   },
   computed: {
+    totalMoney: function () {
+      if (!this.settings) return
+      return this.settings.salary
+    },
+    salaryDay: function () {
+      if (!this.settings) return
+      return this.settings.salaryDay
+    },
     fixedExpenses: function () {
       let total = 0
       this.fixedExpensesList.forEach(expense => {
@@ -84,7 +90,6 @@ export default {
       return total
     },
     daysInMonth: function () {
-      console.log(new Date(this.year, this.month, 0).getDate())
       return new Date(this.year, this.month, 0).getDate()
     },
     spendings: function () {
@@ -100,6 +105,7 @@ export default {
       return (this.daysInMonth + this.salaryDay) - this.day
     },
     dailyIncome: function () {
+      console.log(this.totalMoney, this.fixedExpenses, this.daysInMonth)
       return Math.round((this.totalMoney - this.fixedExpenses) / this.daysInMonth)
     },
     dailySpendings: function () {
