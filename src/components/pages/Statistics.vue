@@ -3,12 +3,26 @@
     <v-layout align-start justify-center row wrap>
       <v-flex xs12>
         <v-card raised hover>
-          <v-container id="spendingsByName"></v-container>
+          <v-container id="spendingsByName">
+            <v-flex v-if="loader" xs12 class="text-xs-center">
+              <v-progress-circular
+                indeterminate
+                color="primary"
+              ></v-progress-circular>
+            </v-flex>
+          </v-container>
         </v-card>
       </v-flex>
       <v-flex xs12>
         <v-card raised hover>
-          <v-container id="spendingsByDate"></v-container>
+          <v-container id="spendingsByDate">
+            <v-flex v-if="loader" xs12 class="text-xs-center">
+              <v-progress-circular
+                indeterminate
+                color="primary"
+              ></v-progress-circular>
+            </v-flex>
+          </v-container>
         </v-card>
       </v-flex>
     </v-layout>
@@ -27,15 +41,17 @@ export default {
   },
   mounted: function () {
     setTimeout(() => {
+      this.hideLoaders()
       this.createSpendingsByNameChart()
       this.createSpendingsByDateChart()
-    }, 300)
+    }, 500)
   },
   data: function () {
     return {
       user: null,
       settings: null,
       dialog: false,
+      loader: true,
       spendingsList: [],
       currencies: Object.keys(currencies)
     }
@@ -51,6 +67,9 @@ export default {
 
   },
   methods: {
+    hideLoaders: function () {
+      this.loader = false
+    },
     createSpendingsByNameChart: function () {
       const data = []
       for (let i = 0; i < this.spendingsList.length; i++) {
