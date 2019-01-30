@@ -7,6 +7,7 @@ import router from './router'
 import VueFire from 'vuefire'
 import firebase from 'firebase'
 import store from './services/Store'
+import './registerServiceWorker'
 
 Vue.config.productionTip = false
 
