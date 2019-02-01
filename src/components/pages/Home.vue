@@ -28,7 +28,7 @@
     </v-layout>
     <v-layout row>
       <v-flex xs12>
-        <SpendingChart :data="spendingsList"/>
+        <SpendingChart :data="filteredSpendingsList"/>
         <FixedExpenses />
         <Spendings />
         <EditDialog />
@@ -46,9 +46,10 @@ import voice from '../../mixins/voice'
 
 import firebase from 'firebase'
 import { db } from '../../services/DataProvider'
+import monthFunctions from '../../mixins/monthFunctions'
 
 export default {
-  mixins: [ voice ],
+  mixins: [ voice, monthFunctions ],
   name: 'home',
   components: { Spendings, FixedExpenses, EditDialog, SpendingChart },
   data: function () {
@@ -57,12 +58,7 @@ export default {
       settings: null,
       currency: '',
       fixedExpensesList: [],
-      spendingsList: [],
-
-      day: new Date().getDate(),
-      month: new Date().getMonth() + 1,
-      year: new Date().getFullYear()
-
+      spendingsList: []
     }
   },
   firestore: function () {
@@ -70,17 +66,16 @@ export default {
       user: db.collection('users').doc(firebase.auth().currentUser.uid),
       settings: db.collection('settings').doc(firebase.auth().currentUser.uid),
       fixedExpensesList: db.collection('fixedExpenses').where('uid', '==', firebase.auth().currentUser.uid).orderBy('price'),
-      spendingsList: db.collection('spendings').where('uid', '==', firebase.auth().currentUser.uid).orderBy('date')
+      spendingsList: db.collection('spendings')
+        .where('uid', '==', firebase.auth().currentUser.uid)
+        .where('date', '>=', new Date(this.year, this.month - 2, 1))
+        .orderBy('date')
     }
   },
   computed: {
     totalMoney: function () {
       if (!this.settings) return
       return this.settings.salary
-    },
-    salaryDay: function () {
-      if (!this.settings) return
-      return this.settings.salaryDay
     },
     fixedExpenses: function () {
       let total = 0
@@ -93,16 +88,21 @@ export default {
       return new Date(this.year, this.month, 0).getDate()
     },
     spendings: function () {
-      if (!this.spendingsList) return []
+      if (!this.filteredSpendingsList) return []
       let total = 0
 
-      this.spendingsList.forEach(s => {
+      this.filteredSpendingsList.forEach(s => {
         total += parseInt(s.price)
       })
       return total * -1
     },
     daysToNextSalary: function () {
-      return (this.daysInMonth + this.salaryDay) - this.day
+      console.log(`(${this.daysInMonth} + ${this.salaryDay}) - ${this.day}`)
+      if (this.day < this.salaryDay) {
+        return this.salaryDay - this.day
+      } else {
+        return (this.daysInMonth + this.salaryDay) - this.day
+      }
     },
     dailyIncome: function () {
       console.log(this.totalMoney, this.fixedExpenses, this.daysInMonth)

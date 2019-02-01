@@ -33,7 +33,11 @@
 import { currencies } from '../../assets/currencies'
 import firebase from 'firebase'
 import { db } from '../../services/DataProvider'
-import zingchart from 'zingchart'
+import Charts from '../../services/Charts'
+import {
+  CHART_TYPE_BAR,
+  CHART_TYPE_HBAR
+} from '../../constants.js'
 
 export default {
   name: 'statistics',
@@ -93,32 +97,16 @@ export default {
 
       const xLabels = data.map(d => d.name)
       const prices = data.map(d => Math.round(d.price))
+      const options = {
+        title: 'Spendings by name',
+        type: CHART_TYPE_HBAR,
+        values: prices,
+        valueAppend: this.settings.currency,
+        tooltipAppend: this.settings.currency,
+        xLabels
+      }
 
-      zingchart.render({
-        width: '94%',
-        id: 'spendingsByName',
-        data: {
-          type: 'hbar',
-          title: {
-            text: 'Spendings by name'
-          },
-          plot: {
-            'value-box': {
-              text: '%v ' + this.settings.currency
-            },
-            tooltip: {
-              text: '%kt - %v ' + this.settings.currency
-            }
-          },
-          'scale-x': {
-            visible: false,
-            labels: xLabels
-          },
-          series: [{
-            values: prices
-          }]
-        }
-      })
+      Charts.createChart('spendingsByName', options)
     },
     createSpendingsByDateChart: function () {
       const data = []
@@ -145,31 +133,16 @@ export default {
       const xLabels = data.map(d => d.date)
       const prices = data.map(d => Math.round(d.price))
 
-      zingchart.render({
-        width: '94%',
-        id: 'spendingsByDate',
-        data: {
-          type: 'bar',
-          title: {
-            text: 'Spendings by date'
-          },
-          plot: {
-            'value-box': {
-              text: '%v ' + this.settings.currency
-            },
-            tooltip: {
-              text: '%kt - %v ' + this.settings.currency
-            }
-          },
-          'scale-x': {
-            visible: false,
-            labels: xLabels
-          },
-          series: [{
-            values: prices
-          }]
-        }
-      })
+      const options = {
+        title: 'Spendings by date',
+        type: CHART_TYPE_BAR,
+        values: prices,
+        valueAppend: this.settings.currency,
+        tooltipAppend: this.settings.currency,
+        xLabels
+      }
+
+      Charts.createChart('spendingsByDate', options)
     }
   }
 }

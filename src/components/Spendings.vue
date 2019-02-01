@@ -17,7 +17,7 @@
                 <div slot="header"></div>
                     <v-list subheader>
                         <v-list-tile
-                            v-for="(s, index) in spendingsList"
+                            v-for="(s, index) in filteredSpendingsList"
                             :key="index"
                             @click="itemClick(s)"
                             >
@@ -71,10 +71,12 @@ import SpendingsDialog from './dialogs/SpendingsDialog'
 import ImportCSV from './import/ImportCSV'
 import firebase from 'firebase'
 import { db } from '../services/DataProvider'
+import monthFunctions from '../mixins/monthFunctions'
 
 export default {
   name: 'spendings',
   components: { SpendingsDialog, ImportCSV },
+  mixins: [ monthFunctions ],
   data: function () {
     return {
       spendingsList: [],
@@ -95,7 +97,7 @@ export default {
       }
     },
     total: function () {
-      return this.spendingsList.reduce((prev, current) => prev + parseInt(current.price), 0)
+      return this.filteredSpendingsList.reduce((prev, current) => prev + parseInt(current.price), 0)
     }
   },
   methods: {
