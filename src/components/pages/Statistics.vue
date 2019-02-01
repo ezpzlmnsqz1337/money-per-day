@@ -25,6 +25,18 @@
           </v-container>
         </v-card>
       </v-flex>
+      <v-flex xs12>
+        <v-card raised hover>
+          <v-container id="salaryDivision">
+            <v-flex v-if="loader" xs12 class="text-xs-center">
+              <v-progress-circular
+                indeterminate
+                color="primary"
+              ></v-progress-circular>
+            </v-flex>
+          </v-container>
+        </v-card>
+      </v-flex>
     </v-layout>
   </v-container>
 </template>
@@ -34,13 +46,16 @@ import { currencies } from '../../assets/currencies'
 import firebase from 'firebase'
 import { db } from '../../services/DataProvider'
 import Charts from '../../services/Charts'
+import monthFunctions from '../../mixins/monthFunctions'
 import {
   CHART_TYPE_BAR,
-  CHART_TYPE_HBAR
+  CHART_TYPE_HBAR,
+  CHART_TYPE_PIE
 } from '../../constants.js'
 
 export default {
   name: 'statistics',
+  mixins: [ monthFunctions ],
   created: function () {
   },
   mounted: function () {
@@ -48,6 +63,7 @@ export default {
       this.hideLoaders()
       this.createSpendingsByNameChart()
       this.createSpendingsByDateChart()
+      this.createSalaryDivisonChart()
     }, 500)
   },
   data: function () {
@@ -57,6 +73,7 @@ export default {
       dialog: false,
       loader: true,
       spendingsList: [],
+      fixedExpensesList: [],
       currencies: Object.keys(currencies)
     }
   },
@@ -64,6 +81,7 @@ export default {
     return {
       user: db.collection('users').doc(firebase.auth().currentUser.uid),
       settings: db.collection('settings').doc(firebase.auth().currentUser.uid),
+      fixedExpensesList: db.collection('fixedExpenses').where('uid', '==', firebase.auth().currentUser.uid).orderBy('price'),
       spendingsList: db.collection('spendings').where('uid', '==', firebase.auth().currentUser.uid).orderBy('date')
     }
   },
@@ -76,19 +94,19 @@ export default {
     },
     createSpendingsByNameChart: function () {
       const data = []
-      for (let i = 0; i < this.spendingsList.length; i++) {
+      for (let i = 0; i < this.filteredSpendingsList.length; i++) {
         let exists = false
         for (let j = 0; j < data.length; j++) {
-          if (data[j].name === this.spendingsList[i].name) {
+          if (data[j].name === this.filteredSpendingsList[i].name) {
             exists = true
-            data[j].price += this.spendingsList[i].price
+            data[j].price += this.filteredSpendingsList[i].price
             break
           }
         }
         if (!exists) {
           data.push({
-            name: this.spendingsList[i].name,
-            price: this.spendingsList[i].price
+            name: this.filteredSpendingsList[i].name,
+            price: this.filteredSpendingsList[i].price
           })
         }
       }
@@ -110,22 +128,22 @@ export default {
     },
     createSpendingsByDateChart: function () {
       const data = []
-      for (let i = 0; i < this.spendingsList.length; i++) {
+      for (let i = 0; i < this.filteredSpendingsList.length; i++) {
         let exists = false
         for (let j = 0; j < data.length; j++) {
           const dataDate = data[j].date
-          const spendingDate = this.spendingsList[i].date.toDate().toLocaleDateString()
+          const spendingDate = this.filteredSpendingsList[i].date.toDate().toLocaleDateString()
           if (dataDate === spendingDate) {
             exists = true
             console.log()
-            data[j].price += this.spendingsList[i].price
+            data[j].price += this.filteredSpendingsList[i].price
             break
           }
         }
         if (!exists) {
           data.push({
-            date: this.spendingsList[i].date.toDate().toLocaleDateString(),
-            price: this.spendingsList[i].price
+            date: this.filteredSpendingsList[i].date.toDate().toLocaleDateString(),
+            price: this.filteredSpendingsList[i].price
           })
         }
       }
@@ -143,6 +161,53 @@ export default {
       }
 
       Charts.createChart('spendingsByDate', options)
+    },
+    createSalaryDivisonChart: function () {
+      let spendings = this.filteredSpendingsList.map(s => s.price).reduce((prev, curr) => Math.round(curr + prev), 0)
+      let fixedExpenses = this.fixedExpensesList.map(fe => fe.price).reduce((prev, curr) => Math.round(curr + prev), 0)
+
+      let leftOver = this.settings.salary - spendings - fixedExpenses
+
+      const options = {
+        title: 'Salary division',
+        type: CHART_TYPE_PIE,
+        series: [
+          {
+            text: 'Spendings',
+            values: [spendings],
+            lineColor: '#00BAF2',
+            backgroundColor: '#db1e1e',
+            lineWidth: 1,
+            marker: {
+              backgroundColor: '#00BAF2'
+            }
+          },
+          {
+            text: 'Fixed expenses',
+            values: [fixedExpenses],
+            lineColor: '#E80C60',
+            backgroundColor: '#efb64c',
+            lineWidth: 1,
+            marker: {
+              backgroundColor: '#E80C60'
+            }
+          },
+          {
+            text: 'Money left',
+            values: [leftOver],
+            lineColor: '#9B26AF',
+            backgroundColor: '#489145',
+            lineWidth: 1,
+            marker: {
+              backgroundColor: '#9B26AF'
+            }
+          }
+        ],
+        valueAppend: this.settings.currency,
+        tooltipAppend: this.settings.currency
+      }
+
+      Charts.createPieChart('salaryDivision', options)
     }
   }
 }
