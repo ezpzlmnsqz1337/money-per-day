@@ -114,7 +114,7 @@ export default {
       data.sort((o1, o2) => o1.price - o2.price)
 
       const xLabels = data.map(d => d.name)
-      const prices = data.map(d => Math.round(d.price))
+      const prices = data.map(d => d.price)
       const options = {
         title: 'Spendings by name',
         type: CHART_TYPE_HBAR,
@@ -135,7 +135,6 @@ export default {
           const spendingDate = this.filteredSpendingsList[i].date.toDate().toLocaleDateString()
           if (dataDate === spendingDate) {
             exists = true
-            console.log()
             data[j].price += this.filteredSpendingsList[i].price
             break
           }
@@ -163,8 +162,8 @@ export default {
       Charts.createChart('spendingsByDate', options)
     },
     createSalaryDivisonChart: function () {
-      let spendings = this.filteredSpendingsList.map(s => s.price).reduce((prev, curr) => Math.round(curr + prev), 0)
-      let fixedExpenses = this.fixedExpensesList.map(fe => fe.price).reduce((prev, curr) => Math.round(curr + prev), 0)
+      let spendings = this.filteredSpendingsList.map(s => s.price).reduce((prev, curr) => curr + prev, 0)
+      let fixedExpenses = this.fixedExpensesList.map(fe => fe.price).reduce((prev, curr) => curr + prev, 0)
 
       let leftOver = this.settings.salary - spendings - fixedExpenses
 
@@ -174,7 +173,7 @@ export default {
         series: [
           {
             text: 'Spendings',
-            values: [spendings],
+            values: [parseFloat(spendings.toFixed(2))],
             lineColor: '#00BAF2',
             backgroundColor: '#db1e1e',
             lineWidth: 1,
@@ -184,7 +183,7 @@ export default {
           },
           {
             text: 'Fixed expenses',
-            values: [fixedExpenses],
+            values: [parseFloat(fixedExpenses.toFixed(2))],
             lineColor: '#E80C60',
             backgroundColor: '#efb64c',
             lineWidth: 1,

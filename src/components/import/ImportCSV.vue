@@ -6,10 +6,22 @@
                 class="headline grey lighten-2"
                 primary-title
             >
-                Edit item
+                Import data
             </v-card-title>
             <v-container>
                 <v-layout row wrap>
+                    <v-flex xs12>
+                       <v-radio-group v-model="importType">
+                        <v-radio
+                          label="Debit card"
+                          value="debit_card"
+                        ></v-radio>
+                        <v-radio
+                          label="Credit card"
+                          value="credit_card"
+                        ></v-radio>
+                      </v-radio-group>
+                    </v-flex>
                     <v-flex xs12>
                         <v-textarea
                         v-model="csvText"
@@ -37,6 +49,7 @@ export default {
   data: function () {
     return {
       dialog: false,
+      importType: 'debit_card',
       csvText: ''
     }
   },
@@ -46,13 +59,17 @@ export default {
 
       csvParse(this.csvText, { delimiter: ';' }, (err, output) => {
         if (!err) {
-          this.addItemsToDatabase(output)
+          if (this.importType === 'debit_card') {
+            this.addDebitItemsToDatabase(output)
+          } else if (this.importType === 'credit_card') {
+            this.addCreditCardItemsToDatabase(output)
+          }
         } else {
           console.log('Error parsing csv text!', err)
         }
       })
     },
-    addItemsToDatabase: function (csvItems) {
+    addDebitItemsToDatabase: function (csvItems) {
       const items = []
       for (let i = 1; i < csvItems.length; i++) {
         const row = csvItems[i]
@@ -64,7 +81,7 @@ export default {
         price = -1 * price
 
         // date
-        let date = row[1].split(' ')
+        let date = row[0].split(' ')
         date = date[0].split('.')
         date = new Date(date[2], date[1] - 1, date[0])
         // name
@@ -72,6 +89,39 @@ export default {
 
         // currency
         let currency = row[14]
+        items.push({ name, price, date, currency })
+      }
+      if (items) {
+        this.$store.addSpendingsImport(items)
+      }
+    },
+    addCreditCardItemsToDatabase: function (csvItems) {
+      const items = []
+      for (let i = 1; i < csvItems.length; i++) {
+        const row = csvItems[i]
+        // price
+        let price = 0
+        if (!row[7]) {
+          price = parseFloat(row[5].replace(',', '.').replace(' ', ''))
+        } else {
+          price = parseFloat(row[7].replace(',', '.').replace(' ', ''))
+        }
+
+        // skip if we get income instead of spending
+        if (price > 0) continue
+        // else
+        price = -1 * price
+
+        // date
+        let date = row[2].split(' ')
+        date = date[0].split('.')
+        date = new Date(date[2], date[1] - 1, date[0])
+        // name
+        let name = row[10]
+
+        // currency
+        let currency = row[8] ? row[8] : row[6]
+
         items.push({ name, price, date, currency })
       }
       if (items) {

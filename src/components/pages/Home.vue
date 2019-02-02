@@ -87,6 +87,10 @@ export default {
     daysInMonth: function () {
       return new Date(this.year, this.month, 0).getDate()
     },
+    daysInLastMonth: function () {
+      const month = this.month === 0 ? 12 : this.month - 1
+      return new Date(this.year, month, 0).getDate()
+    },
     spendings: function () {
       if (!this.filteredSpendingsList) return []
       let total = 0
@@ -97,7 +101,6 @@ export default {
       return total * -1
     },
     daysToNextSalary: function () {
-      console.log(`(${this.daysInMonth} + ${this.salaryDay}) - ${this.day}`)
       if (this.day < this.salaryDay) {
         return this.salaryDay - this.day
       } else {
@@ -105,14 +108,13 @@ export default {
       }
     },
     dailyIncome: function () {
-      console.log(this.totalMoney, this.fixedExpenses, this.daysInMonth)
       return Math.round((this.totalMoney - this.fixedExpenses) / this.daysInMonth)
     },
     dailySpendings: function () {
       return Math.round(this.spendings / this.daysInMonth)
     },
     moneyForToday: function () {
-      return (this.daysToNextSalary - this.salaryDay) * this.dailyIncome + this.spendings
+      return (this.daysInLastMonth - this.daysToNextSalary) * this.dailyIncome + this.spendings
     },
     cards: function () {
       return [
