@@ -28,7 +28,7 @@
     </v-layout>
     <v-layout row>
       <v-flex xs12>
-        <SpendingChart :data="filteredSpendingsList"/>
+        <SpendingChart :data="filteredSpendingsList"  />
         <FixedExpenses />
         <Spendings />
         <EditDialog />

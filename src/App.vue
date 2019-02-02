@@ -3,6 +3,21 @@
     <Drawer />
     <Header/>
     <v-content>
+      <v-snackbar
+        v-model="snackbar"
+        multi-line
+        top
+        :timeout="4000"
+      >
+        {{ snackBarText }}
+        <v-btn
+          dark
+          flat
+          @click="snackbar = false"
+        >
+          Close
+        </v-btn>
+      </v-snackbar>
       <router-view></router-view>
     </v-content>
     <v-footer app></v-footer>
@@ -15,8 +30,17 @@ import Drawer from './components/Drawer.vue'
 
 export default {
   name: 'App',
+  created: function () {
+    this.$root.$on('showSnackBar', text => {
+      console.log('YES')
+      this.snackBarText = text
+      this.snackbar = true
+    })
+  },
   data: function () {
     return {
+      snackbar: false,
+      snackBarText: ''
     }
   },
   components: { Drawer, Header }

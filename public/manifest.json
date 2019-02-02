@@ -1,6 +1,6 @@
 {
-  "name": "money-per-day",
-  "short_name": "money-per-day",
+  "name": "Money per day",
+  "short_name": "MPD",
   "icons": [
     {
       "src": "./img/icons/android-chrome-192x192.png",

@@ -7,14 +7,9 @@ export default {
       annyang.setLanguage('en')
       // Add our commands to annyang
       annyang.addCommands({
-        'en': {
-          'hello': function () { console.log('hello') },
-          'add *item for *price': function (item, price) { this.$store.addSpending(item, price) }
-        },
-        'cs': {
-          'hello': () => { console.log('hello') },
-          'přidej *item za *price': this.$store.addSpending
-        }
+        'hello': function () { this.showSnackbar('hello') },
+        'how are you': function () { this.showSnackbar('I fuck yo mom') },
+        'add *item for *price': function (item, price) { this.showSnackbar(`Adding item ${item} for ${price},- CZK`) }
       })
       SpeechKITT.displayRecognizedSentence(true)
 
@@ -26,6 +21,11 @@ export default {
 
       // Render KITT's interface
       SpeechKITT.vroom()
+    }
+  },
+  methods: {
+    showSnackbar: function (text) {
+      this.$root.$emit('showSnackBar', text)
     }
   }
 }
