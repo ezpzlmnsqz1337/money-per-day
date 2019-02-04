@@ -2,12 +2,12 @@
     <v-flex xs12 pa-0 mb-3 v-if="settings">
         <v-card raised hover >
             <v-card-title primary-title class="headline">
-                <v-flex xs8 pa-0>
+                <v-flex xs7 pa-0>
                     Spendings
                 </v-flex>
-                <v-flex xs4>
+                <v-flex xs5>
                     <v-layout justify-end :class="{ __text_red: total > 0 }">
-                    {{ total > 0 ? '-' + total : total }} {{ currency }}
+                        <div class="__currency">{{ total > 0 ? '-' + total : total }} {{ currency }}</div>
                     </v-layout>
                 </v-flex>
             </v-card-title>
@@ -28,7 +28,7 @@
                             </v-list-tile-content>
 
                             <v-list-tile-action>
-                                <div style="color: red">- {{ s.price }} {{ s.currency }}</div>
+                                <div class="__text_red __item_currency">- {{ s.price.toFixed(2) }} {{ s.currency }}</div>
                             </v-list-tile-action>
                         </v-list-tile>
 
@@ -97,7 +97,7 @@ export default {
       }
     },
     total: function () {
-      return this.filteredSpendingsList.reduce((prev, current) => prev + parseInt(current.price), 0)
+      return this.filteredSpendingsList.reduce((prev, current) => (parseFloat(prev) + parseFloat(current.price)).toFixed(2), 0)
     }
   },
   methods: {
@@ -112,5 +112,12 @@ export default {
 <style scoped>
   .__text_red{
     color: #f44336!important;
+  }
+  .__currency{
+      font-size: 1.3rem;
+  }
+  .__item_currency{
+    width: 14rem;
+    text-align: right;
   }
 </style>

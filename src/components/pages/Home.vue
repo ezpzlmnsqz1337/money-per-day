@@ -56,7 +56,6 @@ export default {
     return {
       user: null,
       settings: null,
-      currency: '',
       fixedExpensesList: [],
       spendingsList: []
     }
@@ -73,6 +72,10 @@ export default {
     }
   },
   computed: {
+    currency: function () {
+      if (!this.settings) return
+      return this.settings.currency
+    },
     totalMoney: function () {
       if (!this.settings) return
       return this.settings.salary
