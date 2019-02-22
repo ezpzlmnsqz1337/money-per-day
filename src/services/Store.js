@@ -1,6 +1,7 @@
 import {
   ELEMENT_TYPE_FIXED_EXPENSE,
-  ELEMENT_TYPE_SPENDING
+  ELEMENT_TYPE_SPENDING,
+  ELEMENT_TYPE_EXTRA_INCOME
 } from '../constants'
 
 import firebase from 'firebase'
@@ -18,6 +19,7 @@ class Store {
               salaryDay: 1,
               salary: 0,
               fixedExpenses: [],
+              extraIncomes: [],
               currency: 'CZK',
               language: 'Czech'
             }
@@ -148,6 +150,33 @@ class Store {
 
   editSpending (id, name, price) {
     db.collection('spendings').doc(id).update({ name, price: parseFloat(price) })
+  }
+
+  addExtraIncome (name, price) {
+    const uid = firebase.auth().currentUser.uid
+    db.collection('settings').doc(uid).get().then(
+      snapshot => {
+        const currency = snapshot.data().currency
+
+        db.collection('extraIncomes').add({
+          uid,
+          name,
+          price: parseFloat(price),
+          currency,
+          date: new Date(),
+          type: ELEMENT_TYPE_EXTRA_INCOME
+        })
+      }
+    )
+  }
+
+  removeExtraIncome (id) {
+    db.collection('extraIncomes').doc(id).delete().then(() => console.log('Extra income deleted'))
+      .catch(err => console.log('Error while deleting extra income. ', err))
+  }
+
+  editExtraIncome (id, name, price) {
+    db.collection('extraIncomes').doc(id).update({ name, price: parseFloat(price) })
   }
 }
 

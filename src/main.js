@@ -2,6 +2,7 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import Vuetify from 'vuetify'
+import 'vuetify/dist/vuetify.min.css' // Ensure you are using css-loader
 import App from './App'
 import router from './router'
 import VueFire from 'vuefire'
@@ -37,23 +38,19 @@ new Vue({
   el: '#app',
   router,
   created: function () {
-    this.authenticate()
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        store.createOrSetUser(user)
+        this.$router.push('/home')
+      } else {
+        this.$router.push('/login')
+      }
+    })
   },
   data: function () {
     return {}
   },
-  methods: {
-    authenticate () {
-      firebase.auth().onAuthStateChanged(user => {
-        if (user) {
-          store.createOrSetUser(user)
-          this.$router.push('/home')
-        } else {
-          this.$router.push('/login')
-        }
-      })
-    }
-  },
+  methods: {},
   components: { App },
   template: '<App/>'
 })

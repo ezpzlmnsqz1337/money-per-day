@@ -6,23 +6,23 @@
           <v-card-title
             class="headline grey lighten-2"
             primary-title
-            @click="addSpending">
-            Add spending
+            @click="addExtraIncome">
+            Add extraIncome
           </v-card-title>
 
-          <v-form v-model="addSpendingFormValid" ref="form">
+          <v-form v-model="addExtraIncomeFormValid" ref="form">
           <v-container>
               <v-layout>
               <v-flex xs6>
-                  <v-text-field v-model="spendingName" label="Item"
-                  :rules="spendingNameRules"
-                  :counter="spendingNameLength"
+                  <v-text-field v-model="extraIncomeName" label="Item"
+                  :rules="extraIncomeNameRules"
+                  :counter="extraIncomeNameLength"
                   required />
               </v-flex>
 
               <v-flex xs6>
-                  <v-text-field v-model="spendingPrice" label="Price"
-                  :rules="spendingPriceRules"
+                  <v-text-field v-model="extraIncomePrice" label="Price"
+                  :rules="extraIncomePriceRules"
                   required />
               </v-flex>
               </v-layout>
@@ -34,7 +34,7 @@
           <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="error" @click="cancel">Cancel</v-btn>
-          <v-btn color="primary" @click="addSpending">Add</v-btn>
+          <v-btn color="primary" @click="addExtraIncome">Add</v-btn>
           </v-card-actions>
       </v-card>
   </v-dialog>
@@ -48,42 +48,42 @@ export default {
   data: function () {
     return {
       dialog: false,
-      addSpendingFormValid: false,
-      spendingName: '',
-      spendingNameLength: 50,
-      spendingNameRules: [
+      addExtraIncomeFormValid: false,
+      extraIncomeName: '',
+      extraIncomeNameLength: 50,
+      extraIncomeNameRules: [
         v => !!v || 'Item name is required',
-        v => v.length <= this.spendingNameLength || 'Name must be less than 10 characters'
+        v => v.length <= this.extraIncomeNameLength || 'Name must be less than 10 characters'
       ],
-      spendingPrice: 0,
-      spendingPriceRules: [
+      extraIncomePrice: 0,
+      extraIncomePriceRules: [
         v => !!v || 'Price is required',
         v => /^([1-9]\d*(\.|,)\d*|0?(\.|,)\d*[1-9]\d*|[1-9]\d*)$/.test(v) || 'Price must be a number'
       ],
-      spendingsList: []
+      extraIncomesList: []
     }
   },
   firestore: function () {
     return {
       user: db.collection('users').doc(firebase.auth().currentUser.uid),
       settings: db.collection('settings').doc(firebase.auth().currentUser.uid),
-      spendingsList: db.collection('spendings').where('uid', '==', firebase.auth().currentUser.uid)
+      extraIncomesList: db.collection('extraIncomes').where('uid', '==', firebase.auth().currentUser.uid)
     }
   },
   methods: {
-    addSpending: function () {
-      if (this.addSpendingFormValid) {
-        this.$store.addSpending(this.spendingName, this.spendingPrice)
+    addExtraIncome: function () {
+      if (this.addExtraIncomeFormValid) {
+        this.$store.addExtraIncome(this.extraIncomeName, this.extraIncomePrice)
         this.dialog = false
-        this.spendingName = ''
-        this.spendingPrice = 0
+        this.extraIncomeName = ''
+        this.extraIncomePrice = 0
       }
       this.$refs.form.resetValidation()
     },
     cancel: function () {
       this.dialog = false
-      this.spendingName = ''
-      this.spendingPrice = 0
+      this.extraIncomeName = ''
+      this.extraIncomePrice = 0
       this.$refs.form.resetValidation()
     }
   }

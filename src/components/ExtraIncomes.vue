@@ -3,21 +3,21 @@
     <v-card raised hover >
       <v-card-title primary-title class="headline">
         <v-flex xs7 pa-0>
-          Spendings
+          Extra income
         </v-flex>
         <v-flex xs5>
           <v-layout justify-end :class="{ __text_red: total > 0 }">
-            <div class="__currency">{{ total > 0 ? '-' + total : total }} {{ currency }}</div>
+            <div class="__currency __text_green">{{ total }} {{ currency }}</div>
           </v-layout>
         </v-flex>
       </v-card-title>
-      <v-divider v-show="filteredSpendingsList.length > 0" />
+      <v-divider v-show="filteredExtraIncomesList.length > 0" />
       <v-expansion-panel :value="1">
         <v-expansion-panel-content>
           <div slot="header"></div>
           <v-list subheader>
             <v-list-tile
-              v-for="(s, index) in filteredSpendingsList"
+              v-for="(s, index) in filteredExtraIncomesList"
               :key="index"
               @click="itemClick(s)"
               >
@@ -28,7 +28,7 @@
               </v-list-tile-content>
 
               <v-list-tile-action>
-                <div class="__text_red __item_currency">- {{ s.price.toFixed(2) }} {{ s.currency }}</div>
+                <div class="__text_green __item_currency">{{ s.price.toFixed(2) }} {{ s.currency }}</div>
               </v-list-tile-action>
             </v-list-tile>
 
@@ -46,7 +46,7 @@
               </v-btn>
             </ImportCSV>
 
-            <SpendingsDialog>
+            <ExtraIncomesDialog>
               <v-btn
                 absolute
                 dark
@@ -58,7 +58,7 @@
                 >
                 <v-icon>add</v-icon>
               </v-btn>
-            </SpendingsDialog>
+            </ExtraIncomesDialog>
           </v-list>
         </v-expansion-panel-content>
       </v-expansion-panel>
@@ -67,19 +67,19 @@
 </template>
 
 <script>
-import SpendingsDialog from './dialogs/SpendingsDialog'
+import ExtraIncomesDialog from './dialogs/ExtraIncomesDialog'
 import ImportCSV from './import/ImportCSV'
 import firebase from 'firebase'
 import { db } from '../services/DataProvider'
 import monthFunctions from '../mixins/monthFunctions'
 
 export default {
-  name: 'spendings',
-  components: { SpendingsDialog, ImportCSV },
+  name: 'extraIncomes',
+  components: { ExtraIncomesDialog, ImportCSV },
   mixins: [ monthFunctions ],
   data: function () {
     return {
-      spendingsList: [],
+      extraIncomesList: [],
       settings: null
     }
   },
@@ -87,7 +87,7 @@ export default {
     return {
       user: db.collection('users').doc(firebase.auth().currentUser.uid),
       settings: db.collection('settings').doc(firebase.auth().currentUser.uid),
-      spendingsList: db.collection('spendings').where('uid', '==', firebase.auth().currentUser.uid).orderBy('date', 'desc')
+      extraIncomesList: db.collection('extraIncomes').where('uid', '==', firebase.auth().currentUser.uid).orderBy('date', 'desc')
     }
   },
   computed: {
@@ -97,8 +97,8 @@ export default {
       }
     },
     total: function () {
-      console.log('Spendings list: ', this.filteredSpendingsList)
-      return this.filteredSpendingsList.reduce((prev, current) => (parseFloat(prev) + parseFloat(current.price)).toFixed(2), 0)
+      console.log('Extra incomes list: ', this.filteredExtraIncomesList)
+      return this.filteredExtraIncomesList.reduce((prev, current) => (parseFloat(prev) + parseFloat(current.price)).toFixed(2), 0)
     }
   },
   methods: {
@@ -111,8 +111,8 @@ export default {
 
 <!-- Add 'scoped' attribute to limit CSS to this component only -->
 <style scoped>
-  .__text_red{
-    color: #f44336!important;
+  .__text_green{
+    color: green;
   }
   .__currency{
       font-size: 1.3rem;

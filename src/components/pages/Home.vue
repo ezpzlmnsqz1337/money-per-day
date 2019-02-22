@@ -30,6 +30,7 @@
       <v-flex xs12>
         <SpendingChart :data="filteredSpendingsList"  />
         <FixedExpenses />
+        <ExtraIncomes />
         <Spendings />
         <EditDialog />
       </v-flex>
@@ -40,6 +41,7 @@
 <script>
 import Spendings from '../Spendings'
 import FixedExpenses from '../FixedExpenses'
+import ExtraIncomes from '../ExtraIncomes'
 import EditDialog from '../dialogs/EditDialog'
 import SpendingChart from '../charts/SpendingChart'
 import voice from '../../mixins/voice'
@@ -51,13 +53,14 @@ import monthFunctions from '../../mixins/monthFunctions'
 export default {
   mixins: [ voice, monthFunctions ],
   name: 'home',
-  components: { Spendings, FixedExpenses, EditDialog, SpendingChart },
+  components: { Spendings, FixedExpenses, EditDialog, SpendingChart, ExtraIncomes },
   data: function () {
     return {
       user: null,
       settings: null,
       fixedExpensesList: [],
-      spendingsList: []
+      spendingsList: [],
+      extraIncomesList: []
     }
   },
   firestore: function () {
@@ -65,10 +68,8 @@ export default {
       user: db.collection('users').doc(firebase.auth().currentUser.uid),
       settings: db.collection('settings').doc(firebase.auth().currentUser.uid),
       fixedExpensesList: db.collection('fixedExpenses').where('uid', '==', firebase.auth().currentUser.uid).orderBy('price'),
-      spendingsList: db.collection('spendings')
-        .where('uid', '==', firebase.auth().currentUser.uid)
-        .where('date', '>=', new Date(this.year, this.month - 2, 1))
-        .orderBy('date')
+      spendingsList: db.collection('spendings').where('uid', '==', firebase.auth().currentUser.uid).orderBy('date'),
+      extraIncomesList: db.collection('extraIncomes').where('uid', '==', firebase.auth().currentUser.uid).orderBy('date')
     }
   },
   computed: {
@@ -78,12 +79,19 @@ export default {
     },
     totalMoney: function () {
       if (!this.settings) return
-      return this.settings.salary
+      return this.settings.salary + this.extraIncomes
     },
     fixedExpenses: function () {
       let total = 0
       this.fixedExpensesList.forEach(expense => {
         total += parseInt(expense.price)
+      })
+      return total
+    },
+    extraIncomes: function () {
+      let total = 0
+      this.filteredExtraIncomesList.forEach(extraIncome => {
+        total += parseInt(extraIncome.price)
       })
       return total
     },

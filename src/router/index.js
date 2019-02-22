@@ -5,7 +5,6 @@ import Home from '@/components/pages/Home'
 import Profile from '@/components/pages/Profile'
 import Settings from '@/components/pages/Settings'
 import Statistics from '@/components/pages/Statistics'
-import 'vuetify/dist/vuetify.min.css' // Ensure you are using css-loader
 
 Vue.use(Router)
 

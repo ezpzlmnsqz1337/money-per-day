@@ -1,5 +1,6 @@
 export const ELEMENT_TYPE_SPENDING = 'SPENDING'
 export const ELEMENT_TYPE_FIXED_EXPENSE = 'FIXED_EXPENSE'
+export const ELEMENT_TYPE_EXTRA_INCOME = 'EXTRA_INCOME'
 
 // charts
 export const CHART_TYPE_BAR = 'bar'
