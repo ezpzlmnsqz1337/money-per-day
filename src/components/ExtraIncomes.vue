@@ -3,7 +3,7 @@
     <v-card raised hover >
       <v-card-title primary-title class="headline">
         <v-flex xs7 pa-0>
-          Extra income
+          Extra incomes
         </v-flex>
         <v-flex xs5>
           <v-layout justify-end :class="{ __text_red: total > 0 }">

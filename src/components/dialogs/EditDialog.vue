@@ -49,7 +49,8 @@
 <script>
 import {
   ELEMENT_TYPE_SPENDING,
-  ELEMENT_TYPE_FIXED_EXPENSE
+  ELEMENT_TYPE_FIXED_EXPENSE,
+  ELEMENT_TYPE_EXTRA_INCOME
 } from '../../constants.js'
 import firebase from 'firebase'
 import { db } from '../../services/DataProvider'
@@ -100,6 +101,12 @@ export default {
             this.item.name,
             this.item.price
           )
+        } else if (this.item.type === ELEMENT_TYPE_EXTRA_INCOME) {
+          this.$store.editExtraIncome(
+            this.item.id,
+            this.item.name,
+            this.item.price
+          )
         }
 
         this.dialog = false
@@ -111,6 +118,8 @@ export default {
           this.$store.removeFixedExpense(this.item.id)
         } else if (this.item.type === ELEMENT_TYPE_SPENDING) {
           this.$store.removeSpending(this.item.id)
+        } else if (this.item.type === ELEMENT_TYPE_EXTRA_INCOME) {
+          this.$store.removeExtraIncome(this.item.id)
         }
 
         this.dialog = false

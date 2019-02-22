@@ -71,12 +71,14 @@ export default {
     },
     addDebitItemsToDatabase: function (csvItems) {
       const items = []
+      const incomes = []
       for (let i = 1; i < csvItems.length; i++) {
+        let isIncome = false
         const row = csvItems[i]
         // price
         let price = parseFloat(row[13].replace(',', '.').replace(' ', ''))
-        // skip if we get income instead of spending
-        if (price > 0) continue
+
+        if (price > 0) isIncome = true
         // else
         price = -1 * price
 
@@ -89,10 +91,19 @@ export default {
 
         // currency
         let currency = row[14]
-        items.push({ name, price, date, currency })
+
+        // if we get income instead of spending, add it to extra incomes
+        if (isIncome) {
+          incomes.push({ name, price: price * -1, date, currency })
+        } else {
+          items.push({ name, price, date, currency })
+        }
       }
       if (items) {
         this.$store.addSpendingsImport(items)
+      }
+      if (incomes) {
+        this.$store.addExtraIncomesImport(incomes)
       }
     },
     addCreditCardItemsToDatabase: function (csvItems) {

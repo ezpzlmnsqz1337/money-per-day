@@ -139,7 +139,7 @@ class Store {
     })
     // Commit the batch
     batch.commit().then(() => {
-      console.log(items.length + ' items have been imported.')
+      console.log(items.length + ' spendins have been imported.')
     })
   }
 
@@ -168,6 +168,28 @@ class Store {
         })
       }
     )
+  }
+
+  addExtraIncomesImport (items) {
+    const uid = firebase.auth().currentUser.uid
+
+    const batch = db.batch()
+
+    items.forEach(i => {
+      const spendingsRef = db.collection('extraIncomes').doc()
+      batch.set(spendingsRef, {
+        uid,
+        name: i.name,
+        price: parseFloat(i.price),
+        currency: i.currency,
+        date: i.date,
+        type: ELEMENT_TYPE_EXTRA_INCOME
+      })
+    })
+    // Commit the batch
+    batch.commit().then(() => {
+      console.log(items.length + ' extra incomes have been imported.')
+    })
   }
 
   removeExtraIncome (id) {
