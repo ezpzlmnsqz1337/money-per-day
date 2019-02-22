@@ -18,18 +18,20 @@ class Charts {
           text: options.title
         },
         plot: {
-          'value-box': {
+          valueBox: {
+            fontColor: 'black',
             text: '%v ' + options.valueAppend
           },
           tooltip: {
             text: '%kt - %v ' + options.tooltipAppend
           }
         },
-        'scale-x': {
+        scaleX: {
           visible: false,
           labels: options.xLabels
         },
         series: [{
+          backgroundColor: '#039BE5',
           values: options.values
         }]
       }

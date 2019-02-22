@@ -175,7 +175,7 @@ export default {
             text: 'Spendings',
             values: [parseFloat(spendings.toFixed(2))],
             lineColor: '#00BAF2',
-            backgroundColor: '#db1e1e',
+            backgroundColor: '#EF5350',
             lineWidth: 1,
             marker: {
               backgroundColor: '#00BAF2'
@@ -185,7 +185,7 @@ export default {
             text: 'Fixed expenses',
             values: [parseFloat(fixedExpenses.toFixed(2))],
             lineColor: '#E80C60',
-            backgroundColor: '#efb64c',
+            backgroundColor: '#1E88E5',
             lineWidth: 1,
             marker: {
               backgroundColor: '#E80C60'
@@ -195,7 +195,7 @@ export default {
             text: 'Money left',
             values: [leftOver],
             lineColor: '#9B26AF',
-            backgroundColor: '#489145',
+            backgroundColor: '#66BB6A',
             lineWidth: 1,
             marker: {
               backgroundColor: '#9B26AF'

@@ -90,23 +90,11 @@ export default {
     editItem: function () {
       if (this.itemEditFormValid) {
         if (this.item.type === ELEMENT_TYPE_FIXED_EXPENSE) {
-          this.$store.editFixedExpense(
-            this.item.id,
-            this.item.name,
-            this.item.price
-          )
+          this.$store.editFixedExpense(this.item.id, this.item.name, this.item.price)
         } else if (this.item.type === ELEMENT_TYPE_SPENDING) {
-          this.$store.editSpending(
-            this.item.id,
-            this.item.name,
-            this.item.price
-          )
+          this.$store.editSpending(this.item.id, this.item.name, this.item.price)
         } else if (this.item.type === ELEMENT_TYPE_EXTRA_INCOME) {
-          this.$store.editExtraIncome(
-            this.item.id,
-            this.item.name,
-            this.item.price
-          )
+          this.$store.editExtraIncome(this.item.id, this.item.name, this.item.price)
         }
 
         this.dialog = false
@@ -125,7 +113,6 @@ export default {
         this.dialog = false
       }
     }
-
   }
 }
 </script>

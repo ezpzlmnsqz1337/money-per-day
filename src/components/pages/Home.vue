@@ -32,6 +32,7 @@
         <FixedExpenses />
         <ExtraIncomes />
         <Spendings />
+        <Calendar />
         <EditDialog />
       </v-flex>
     </v-layout>
@@ -39,6 +40,7 @@
 </template>
 
 <script>
+import Calendar from '../Calendar'
 import Spendings from '../Spendings'
 import FixedExpenses from '../FixedExpenses'
 import ExtraIncomes from '../ExtraIncomes'
@@ -53,7 +55,7 @@ import monthFunctions from '../../mixins/monthFunctions'
 export default {
   mixins: [ voice, monthFunctions ],
   name: 'home',
-  components: { Spendings, FixedExpenses, EditDialog, SpendingChart, ExtraIncomes },
+  components: { Spendings, FixedExpenses, EditDialog, SpendingChart, ExtraIncomes, Calendar },
   data: function () {
     return {
       user: null,
