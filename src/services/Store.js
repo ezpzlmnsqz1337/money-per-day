@@ -2,50 +2,64 @@ import {
   ELEMENT_TYPE_FIXED_EXPENSE,
   ELEMENT_TYPE_SPENDING,
   ELEMENT_TYPE_EXTRA_INCOME
-} from '../constants'
+} from '@/constants'
 
 import firebase from 'firebase'
 import { db } from './DataProvider'
 
 class Store {
-  init (user) {
-    const userRef = db.collection('users').doc(user.uid)
-    userRef.get().then(doc => {
-      if (doc.exists) {
-        if (!doc.data().state) {
-          const state = {
-            settings: {
-              spendings: [],
-              salaryDay: 1,
-              salary: 0,
-              fixedExpenses: [],
-              extraIncomes: [],
-              currency: 'CZK',
-              language: 'Czech'
-            }
-          }
-          userRef.set({ state }, { merge: true })
+  constructor () {
+    this.settings = {}
+    this.fixedExpenses = []
+    this.spendings = []
+    this.extraIncomes = []
+  }
+
+  async init (user) {
+    return new Promise((resolve, reject) => {
+      // get user document
+      const userRef = db.collection('users').doc(user.uid)
+      userRef.get().then(doc => {
+        if (doc.exists) {
+        // if user exists, set store state variable from remote
+          this.settings = db.collection('settings').doc(user.uid).get()
+          this.fixedExpenses = db.collection('fixedExpenses').where('uid', '==', user.uid).orderBy('price').get()
+          this.spendings = db.collection('spendings').where('uid', '==', user.uid).orderBy('price').get()
+          this.extraIncome = db.collection('extraIncome').where('uid', '==', user.uid).orderBy('price').get()
         } else {
-          this.state = doc.data().state
+        // if user does not exist, create default settings
+          this.settings = db.collection('settings').doc(user.uid).get()
+          this.fixedExpenses = db.collection('fixedExpenses').where('uid', '==', user.uid).orderBy('price').get()
+          this.spendings = db.collection('spendings').where('uid', '==', user.uid).orderBy('price').get()
+          this.extraIncome = db.collection('extraIncome').where('uid', '==', user.uid).orderBy('price').get()
         }
-      }
+        setTimeout(() => {
+          resolve()
+        }, 500)
+      })
     })
   }
 
   async createOrSetUser (user) {
-    const userRef = db.collection('users').doc(user.uid)
+    return new Promise((resolve, reject) => {
+      const userRef = db.collection('users').doc(user.uid)
 
-    userRef.get().then(doc => {
-      if (doc.exists) {
-        this.init(user)
-      } else {
-        userRef.set({
-          uid: user.uid,
-          name: user.displayName,
-          email: user.email,
-          photoURL: user.photoURL
-        })
-      }
+      userRef.get().then(async doc => {
+        if (doc.exists) {
+          // if user exists, load his settings
+          await this.init(user)
+        } else {
+          // if user does not exist, create new one
+          userRef.set({
+            uid: user.uid,
+            name: user.displayName,
+            email: user.email,
+            photoURL: user.photoURL
+          })
+        }
+        console.log('Create or set user')
+        resolve()
+      })
     })
   }
 

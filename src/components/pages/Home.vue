@@ -34,6 +34,7 @@
         <Spendings />
         <!-- <Calendar /> -->
         <EditDialog />
+        {{ testStore2 }}
       </v-flex>
     </v-layout>
   </v-container>
@@ -62,7 +63,8 @@ export default {
       settings: null,
       fixedExpensesList: [],
       spendingsList: [],
-      extraIncomesList: []
+      extraIncomesList: [],
+      testStore: this.$store.spendings
     }
   },
   firestore: function () {
@@ -74,7 +76,15 @@ export default {
       extraIncomesList: db.collection('extraIncomes').where('uid', '==', firebase.auth().currentUser.uid).orderBy('date')
     }
   },
+  mounted: function () {
+    console.log('HOME MOUNTER')
+  },
   computed: {
+    testStore2: function () {
+      console.log('This test store1: ', this.testStore)
+      console.log('This test store2: ', this.$store.fixedExpenses)
+      return this.$store.fixedExpenses
+    },
     currency: function () {
       if (!this.settings) return
       return this.settings.currency

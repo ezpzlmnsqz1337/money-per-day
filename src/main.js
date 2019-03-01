@@ -38,9 +38,9 @@ new Vue({
   el: '#app',
   router,
   created: function () {
-    firebase.auth().onAuthStateChanged(user => {
+    firebase.auth().onAuthStateChanged(async user => {
       if (user) {
-        store.createOrSetUser(user)
+        await store.createOrSetUser(user)
         this.$router.push('/home')
       } else {
         this.$router.push('/login')
