@@ -53,7 +53,7 @@
 <script>
 import FixedExpensesDialog from './dialogs/FixedExpensesDialog'
 import firebase from 'firebase'
-import { db } from '../services/DataProvider'
+import { db } from '@/services/DataProvider'
 
 export default {
   name: 'fixedExpenses',

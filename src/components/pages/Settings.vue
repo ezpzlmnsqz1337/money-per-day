@@ -35,9 +35,9 @@
 </template>
 
 <script>
-import { currencies } from '../../assets/currencies'
+import { currencies } from '@/assets/currencies'
 import firebase from 'firebase'
-import { db } from '../../services/DataProvider'
+import { db } from '@/services/DataProvider'
 
 export default {
   name: 'settings',

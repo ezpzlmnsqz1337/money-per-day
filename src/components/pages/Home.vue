@@ -46,11 +46,11 @@ import FixedExpenses from '../FixedExpenses'
 import ExtraIncomes from '../ExtraIncomes'
 import EditDialog from '../dialogs/EditDialog'
 import SpendingChart from '../charts/SpendingChart'
-import voice from '../../mixins/voice'
+import voice from '@/mixins/voice'
 
 import firebase from 'firebase'
-import { db } from '../../services/DataProvider'
-import monthFunctions from '../../mixins/monthFunctions'
+import { db } from '@/services/DataProvider'
+import monthFunctions from '@/mixins/monthFunctions'
 
 export default {
   mixins: [ voice, monthFunctions ],

@@ -14,9 +14,8 @@
       <v-sheet height="500">
         <v-calendar
           ref="calendar"
-          v-model="start"
-          :type="type"
-          :end="end"
+          :start="fromDate"
+          :end="toDate"
           color="primary"
         ></v-calendar>
       </v-sheet>
@@ -25,11 +24,12 @@
 </template>
 
 <script>
+import monthFunctions from '@/mixins/monthFunctions'
 
 export default {
+  mixins: [ monthFunctions ],
   data () {
     return {
-
     }
   },
   firestore: function () {

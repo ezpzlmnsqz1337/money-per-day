@@ -51,9 +51,9 @@ import {
   ELEMENT_TYPE_SPENDING,
   ELEMENT_TYPE_FIXED_EXPENSE,
   ELEMENT_TYPE_EXTRA_INCOME
-} from '../../constants.js'
+} from '@/constants.js'
 import firebase from 'firebase'
-import { db } from '../../services/DataProvider'
+import { db } from '@/services/DataProvider'
 
 export default {
   created: function () {

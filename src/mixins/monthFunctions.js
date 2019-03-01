@@ -17,12 +17,19 @@ export default {
       const newList = this.extraIncomesList.filter(s => s.date.toDate() >= this.fromDate && s.date.toDate() < this.toDate)
       return newList
     },
+    realMonth: function () {
+      let month = this.month - 2
+      if (this.day - this.salaryDay < 0) {
+        month += 1
+      }
+      return month
+    },
     fromDate: function () {
-      const date = new Date(this.year, this.month - 1, this.salaryDay)
+      const date = new Date(this.year, this.realMonth - 1, this.salaryDay)
       return date
     },
     toDate: function () {
-      const date = new Date(this.year, this.month, this.salaryDay)
+      const date = new Date(this.year, this.realMonth, this.salaryDay)
       return date
     },
     salaryDay: function () {

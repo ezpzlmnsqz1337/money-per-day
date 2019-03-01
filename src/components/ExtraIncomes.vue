@@ -70,8 +70,8 @@
 import ExtraIncomesDialog from './dialogs/ExtraIncomesDialog'
 import ImportCSV from './import/ImportCSV'
 import firebase from 'firebase'
-import { db } from '../services/DataProvider'
-import monthFunctions from '../mixins/monthFunctions'
+import { db } from '@/services/DataProvider'
+import monthFunctions from '@/mixins/monthFunctions'
 
 export default {
   name: 'extraIncomes',

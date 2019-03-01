@@ -27,7 +27,7 @@
 <script>
 import firebase from 'firebase'
 import { languages } from 'countries-list'
-import { db } from '../../services/DataProvider'
+import { db } from '@/services/DataProvider'
 
 export default {
   name: 'profile',

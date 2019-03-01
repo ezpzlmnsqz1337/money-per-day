@@ -70,8 +70,8 @@
 import SpendingsDialog from './dialogs/SpendingsDialog'
 import ImportCSV from './import/ImportCSV'
 import firebase from 'firebase'
-import { db } from '../services/DataProvider'
-import monthFunctions from '../mixins/monthFunctions'
+import { db } from '@/services/DataProvider'
+import monthFunctions from '@/mixins/monthFunctions'
 
 export default {
   name: 'spendings',
@@ -97,7 +97,6 @@ export default {
       }
     },
     total: function () {
-      console.log('Spendings list: ', this.filteredSpendingsList)
       return this.filteredSpendingsList.reduce((prev, current) => (parseFloat(prev) + parseFloat(current.price)).toFixed(2), 0)
     }
   },

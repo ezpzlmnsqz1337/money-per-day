@@ -42,16 +42,16 @@
 </template>
 
 <script>
-import { currencies } from '../../assets/currencies'
+import { currencies } from '@/assets/currencies'
 import firebase from 'firebase'
-import { db } from '../../services/DataProvider'
-import Charts from '../../services/Charts'
-import monthFunctions from '../../mixins/monthFunctions'
+import { db } from '@/services/DataProvider'
+import Charts from '@/services/Charts'
+import monthFunctions from '@/mixins/monthFunctions'
 import {
   CHART_TYPE_BAR,
   CHART_TYPE_HBAR,
   CHART_TYPE_PIE
-} from '../../constants.js'
+} from '@/constants.js'
 
 export default {
   name: 'statistics',
