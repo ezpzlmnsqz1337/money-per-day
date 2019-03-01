@@ -32,7 +32,7 @@
         <FixedExpenses />
         <ExtraIncomes />
         <Spendings />
-        <Calendar />
+        <!-- <Calendar /> -->
         <EditDialog />
       </v-flex>
     </v-layout>
@@ -40,13 +40,13 @@
 </template>
 
 <script>
-import Calendar from '../Calendar'
 import Spendings from '../Spendings'
 import FixedExpenses from '../FixedExpenses'
 import ExtraIncomes from '../ExtraIncomes'
 import EditDialog from '../dialogs/EditDialog'
 import SpendingChart from '../charts/SpendingChart'
 import voice from '@/mixins/voice'
+import Calendar from '../Calendar'
 
 import firebase from 'firebase'
 import { db } from '@/services/DataProvider'

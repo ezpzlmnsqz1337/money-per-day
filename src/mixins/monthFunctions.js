@@ -25,10 +25,12 @@ export default {
       return month
     },
     fromDate: function () {
+      if (!this.settings) return
       const date = new Date(this.year, this.realMonth - 1, this.salaryDay)
       return date
     },
     toDate: function () {
+      if (!this.settings) return
       const date = new Date(this.year, this.realMonth, this.salaryDay)
       return date
     },
