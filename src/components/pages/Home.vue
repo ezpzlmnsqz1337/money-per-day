@@ -137,7 +137,11 @@ export default {
       return Math.round(this.spendings / this.daysInMonth)
     },
     moneyForToday: function () {
-      return (this.daysInLastMonth - this.daysToNextSalary) * this.dailyIncome + this.spendings
+      if (this.day < this.salaryDay) {
+        return (this.daysInLastMonth - this.daysToNextSalary) * this.dailyIncome + this.spendings
+      } else {
+        return (this.day - this.salaryDay) * this.dailyIncome + this.spendings
+      }
     },
     cards: function () {
       return [

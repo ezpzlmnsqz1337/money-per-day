@@ -18,20 +18,22 @@ export default {
       return newList
     },
     realMonth: function () {
-      let month = this.month - 2
+      let month = this.month - 1
       if (this.day - this.salaryDay < 0) {
-        month += 1
+        month -= 1
       }
       return month
     },
     fromDate: function () {
       if (!this.settings) return
-      const date = new Date(this.year, this.realMonth - 1, this.salaryDay)
+      const date = new Date(this.year, this.realMonth, this.salaryDay)
+      console.log(`From date: ${date}`)
       return date
     },
     toDate: function () {
       if (!this.settings) return
-      const date = new Date(this.year, this.realMonth, this.salaryDay)
+      const date = new Date(this.year, this.realMonth + 1, this.salaryDay)
+      console.log(`To date: ${date}`)
       return date
     },
     salaryDay: function () {
