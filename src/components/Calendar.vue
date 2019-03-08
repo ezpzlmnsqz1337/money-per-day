@@ -14,16 +14,20 @@
           color="primary"
         >
 
-          <template v-slot:day="event.date">
+          <template v-slot:day="{ date }">
+            <template v-for="event in eventsMap[date]">
               <v-menu
+                :key="event.title"
                 v-model="event.open"
                 full-width
                 offset-x
               >
-                <template v-slot:activator>
+                <template v-slot:activator="{ on }">
                   <div
+                    v-if="!event.time"
                     v-ripple
                     class="my-event"
+                    v-on="on"
                     v-html="event.title"
                   ></div>
                 </template>
@@ -61,6 +65,7 @@
                   </v-card-actions>
                 </v-card>
               </v-menu>
+            </template>
           </template>
         </v-calendar>
       </v-sheet>
@@ -77,12 +82,6 @@ export default {
   mixins: [ monthFunctions ],
   data () {
     return {
-      event: {
-        title: 'My awesome event!',
-        date: '2019-02-15',
-        details: 'Its superb easy',
-        open: false
-      },
       spendingsList: [],
       extraIncomesList: []
     }
@@ -95,75 +94,36 @@ export default {
   },
   computed: {
     start: function () {
-      if (!this.startDate) return '2019-02-06'
+      if (!this.startDate) return '2019-03-06'
       return this.startDate.toISOString().slice(0, 10)
     },
     end: function () {
-      if (!this.endDate) return '2019-03-06'
+      if (!this.endDate) return '2019-04-06'
       return this.endDate.toISOString().slice(0, 10)
     },
     events: function () {
       const events = []
-      console.log('FIltered spendings: ', this.filteredSpendingsList)
+      const event = {
+        title: 'Vacation',
+        details: 'Going to the beach!',
+        date: '2019-03-09',
+        open: false
+      }
+      events.push(event)
+      console.log('Events: ', events)
+      this.$store.spendings.then(snapshot => {
+        console.log('Store spend list: ', snapshot.docs)
+      })
       this.filteredSpendingsList.forEach(s => {
         const event = {
-          title: 'Vacation',
-          details: 'Going to the beach!',
-          date: '2018-12-30',
+          title: `${s.name.substring(0, 6)}... + ${s.price}`,
+          details: `${s.name} - ${s.price}`,
+          date: '2019-03-09',
           open: false
         }
         events.push(event)
       })
-      return [
-        {
-          title: 'Vacation',
-          details: 'Going to the beach!',
-          date: '2019-02-15',
-          open: false
-        },
-        {
-          title: 'Vacation',
-          details: 'Going to the beach!',
-          date: '2019-02-16',
-          open: false
-        },
-        {
-          title: 'Vacation',
-          details: 'Going to the beach!',
-          date: '2019-02-17',
-          open: false
-        },
-        {
-          title: 'Meeting',
-          details: 'Spending time on how we do not have enough time',
-          date: '2019-02-18',
-          open: false
-        },
-        {
-          title: '30th Birthday',
-          details: 'Celebrate responsibly',
-          date: '2019-02-19',
-          open: false
-        },
-        {
-          title: 'New Year',
-          details: 'Eat chocolate until you pass out',
-          date: '2019-02-20',
-          open: false
-        },
-        {
-          title: 'Conference',
-          details: 'Mute myself the whole time and wonder why I am on this call',
-          date: '2019-02-28',
-          open: false
-        },
-        {
-          title: 'Hackathon',
-          details: 'Code like there is no tommorrow',
-          date: '2019-03-01',
-          open: false
-        }
-      ]
+      return events
     },
     // convert the list of events into a map of lists keyed by date
     eventsMap () {
@@ -173,23 +133,23 @@ export default {
       console.log('Map: ', map)
       return map
     }
-  },
-  methods: {
-
   }
 }
 </script>
 
-<!-- Add 'scoped' attribute to limit CSS to this component only -->
 <style scoped>
-  .__text_red{
-    color: #f44336!important;
-  }
-  .__currency{
-      font-size: 1.3rem;
-  }
-  .__item_currency{
-    width: 14rem;
-    text-align: right;
+  .my-event {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    border-radius: 2px;
+    background-color: #1867c0;
+    color: #ffffff;
+    border: 1px solid #1867c0;
+    width: 100%;
+    font-size: 12px;
+    padding: 3px;
+    cursor: pointer;
+    margin-bottom: 1px;
   }
 </style>

@@ -32,9 +32,8 @@
         <FixedExpenses />
         <ExtraIncomes />
         <Spendings />
-        <!-- <Calendar /> -->
+        <Calendar />
         <EditDialog />
-        {{ testStore2 }}
       </v-flex>
     </v-layout>
   </v-container>
