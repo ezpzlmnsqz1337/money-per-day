@@ -1,30 +1,30 @@
 <template>
-  <v-navigation-drawer app v-model="drawer">
+  <v-navigation-drawer v-model="drawer" app>
     <v-toolbar flat color="indigo">
       <v-list>
-        <v-list-tile>
-          <v-list-tile-title class="title">{{title}}</v-list-tile-title>
-        </v-list-tile>
+        <v-list-item>
+          <v-list-item-title class="title">{{ title }}</v-list-item-title>
+        </v-list-item>
       </v-list>
     </v-toolbar>
     <v-divider></v-divider>
     <v-list dense pt-0>
-      <v-list-tile v-for="item in items" :key="item.title" @click="goTo(item.route)">
-        <v-list-tile-action>
+      <v-list-item v-for="item in items" :key="item.title" @click="goTo(item.route)">
+        <v-list-item-action>
           <v-icon>{{ item.icon }}</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
-      <v-list-tile v-if="user" @click="signOut()">
-        <v-list-tile-action>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>{{ item.title }}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item v-if="user" @click="signOut()">
+        <v-list-item-action>
           <v-icon>exit_to_app</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-title>Sign out</v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>Sign out</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
     </v-list>
   </v-navigation-drawer>
 </template>
@@ -33,11 +33,9 @@
 import firebase from 'firebase'
 
 export default {
-  name: 'drawer',
-  created () {
-    this.$root.$on('toggleDrawer', this.toggleDrawer)
-  },
-  data () {
+  name: 'Drawer',
+  props: {},
+  data() {
     return {
       user: true,
       firebase: firebase,
@@ -72,18 +70,21 @@ export default {
     }
   },
   watch: {
-    drawer (value) {
+    drawer(value) {
       return value
     }
   },
+  created() {
+    this.$root.$on('toggleDrawer', this.toggleDrawer)
+  },
   methods: {
-    goTo (destination) {
+    goTo(destination) {
       this.$router.replace(destination)
     },
-    toggleDrawer () {
+    toggleDrawer() {
       this.drawer = !this.drawer
     },
-    signOut () {
+    signOut() {
       firebase
         .auth()
         .signOut()
@@ -92,8 +93,7 @@ export default {
         })
         .catch(err => console.log(err))
     }
-  },
-  props: {}
+  }
 }
 </script>
 

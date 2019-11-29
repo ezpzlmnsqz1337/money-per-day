@@ -1,5 +1,5 @@
 export class User {
-  constructor () {
+  constructor() {
     this.photo = ''
     this.userId = ''
     this.name = ''

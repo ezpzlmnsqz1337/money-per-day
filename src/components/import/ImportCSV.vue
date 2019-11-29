@@ -1,52 +1,42 @@
 <template>
-    <v-dialog v-model="dialog" width="800">
-        <slot slot="activator" name="activator"></slot>
-        <v-card>
-            <v-card-title
-                class="headline grey lighten-2"
-                primary-title
-            >
-                Import data
-            </v-card-title>
-            <v-container>
-                <v-layout row wrap>
-                    <v-flex xs12>
-                       <v-radio-group v-model="importType">
-                        <v-radio
-                          label="Debit card"
-                          value="debit_card"
-                        ></v-radio>
-                        <v-radio
-                          label="Credit card"
-                          value="credit_card"
-                        ></v-radio>
-                      </v-radio-group>
-                    </v-flex>
-                    <v-flex xs12>
-                        <v-textarea
-                        v-model="csvText"
-                        label="CSV content"
-                        hint="Paste your csv content here..."
-                        ></v-textarea>
-                    </v-flex>
-                </v-layout>
-            </v-container>
-            <v-divider></v-divider>
+  <v-dialog v-model="dialog" width="800">
+    <slot slot="activator" name="activator"></slot>
+    <v-card>
+      <v-card-title class="headline grey lighten-2" primary-title>
+        Import data
+      </v-card-title>
+      <v-container>
+        <v-layout row wrap>
+          <v-flex xs12>
+            <v-radio-group v-model="importType">
+              <v-radio label="Debit card" value="debit_card"></v-radio>
+              <v-radio label="Credit card" value="credit_card"></v-radio>
+            </v-radio-group>
+          </v-flex>
+          <v-flex xs12>
+            <v-textarea
+              v-model="csvText"
+              label="CSV content"
+              hint="Paste your csv content here..."
+            ></v-textarea>
+          </v-flex>
+        </v-layout>
+      </v-container>
+      <v-divider></v-divider>
 
-            <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="primary" @click="importCsv">Save</v-btn>
-            </v-card-actions>
-        </v-card>
-
-    </v-dialog>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="primary" @click="importCsv">Save</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
 import csvParse from 'csv-parse'
 
 export default {
-  data: function () {
+  data: function() {
     return {
       dialog: false,
       importType: 'debit_card',
@@ -54,7 +44,7 @@ export default {
     }
   },
   methods: {
-    importCsv: function () {
+    importCsv: function() {
       if (!this.csvText) return
 
       csvParse(this.csvText, { delimiter: ';' }, (err, output) => {
@@ -69,7 +59,7 @@ export default {
         }
       })
     },
-    addDebitItemsToDatabase: function (csvItems) {
+    addDebitItemsToDatabase: function(csvItems) {
       const items = []
       const incomes = []
       for (let i = 1; i < csvItems.length; i++) {
@@ -106,7 +96,7 @@ export default {
         this.$store.addExtraIncomesImport(incomes)
       }
     },
-    addCreditCardItemsToDatabase: function (csvItems) {
+    addCreditCardItemsToDatabase: function(csvItems) {
       const items = []
       for (let i = 1; i < csvItems.length; i++) {
         const row = csvItems[i]
@@ -144,6 +134,4 @@ export default {
 </script>
 
 <!-- Add 'scoped' attribute to limit CSS to this component only -->
-<style scoped>
-
-</style>
+<style scoped></style>

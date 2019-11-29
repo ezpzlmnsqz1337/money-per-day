@@ -1,9 +1,9 @@
 module.exports = {
   runtimeCompiler: true,
   devServer: {
-    open: process.platform === 'darwin',
+    open: false,
     host: '0.0.0.0',
-    port: 8080, // CHANGE YOUR PORT HERE!
+    port: 8080,
     https: false
   },
   pwa: {
@@ -11,5 +11,6 @@ module.exports = {
     workboxOptions: {
       swSrc: 'src/service-worker.js'
     }
-  }
+  },
+  transpileDependencies: ['vuetify']
 }

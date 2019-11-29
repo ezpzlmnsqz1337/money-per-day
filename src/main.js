@@ -1,20 +1,17 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
-import Vuetify from 'vuetify'
-import 'vuetify/dist/vuetify.min.css' // Ensure you are using css-loader
 import App from './App'
 import router from './router'
-import VueFire from 'vuefire'
-import firebase from 'firebase'
+import { firestorePlugin } from 'vuefire'
+import firebase from 'firebase/app'
 import store from './services/Store'
 import './registerServiceWorker'
+import vuetify from './plugins/vuetify'
 
 Vue.config.productionTip = false
 
-Vue.use(Vuetify)
-Vue.use(VueFire)
-Vue.use(firebase)
+Vue.use(firestorePlugin)
 
 router.beforeEach((to, from, next) => {
   if (to.path !== '/login') {
@@ -26,7 +23,7 @@ router.beforeEach((to, from, next) => {
       next('login')
     }
   } else {
-    console.log('You\'re on the login page')
+    console.log("You're on the login page")
     next()
   }
 })
@@ -37,7 +34,13 @@ Object.defineProperty(Vue.prototype, '$store', { value: store })
 new Vue({
   el: '#app',
   router,
-  created: function () {
+  components: { App },
+
+  data: function() {
+    return {}
+  },
+
+  created: function() {
     firebase.auth().onAuthStateChanged(async user => {
       if (user) {
         await store.createOrSetUser(user)
@@ -47,10 +50,8 @@ new Vue({
       }
     })
   },
-  data: function () {
-    return {}
-  },
+
   methods: {},
-  components: { App },
+  vuetify,
   template: '<App/>'
 })

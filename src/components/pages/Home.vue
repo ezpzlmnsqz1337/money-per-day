@@ -1,26 +1,31 @@
 /* eslint-disable no-undef */
 <template>
-  <v-container v-bind="{ ['grid-list-md']: true }" v-if="user">
+  <v-container v-if="user" v-bind="{ ['grid-list-md']: true }">
     <v-layout align-start justify-center row wrap>
-      <v-flex
-        v-for="card in cards"
-        :key="card.id"
-        xs12 md6>
+      <v-flex v-for="card in cards" :key="card.id" xs12 md6>
         <v-card raised hover>
           <v-card-title primary-title>
             <v-layout row>
-                <v-flex xs8 class="headline">{{ card.name }}</v-flex>
-                <v-flex xs4 >
-                  <v-layout align-end justify-end fill-height>
-                    <v-progress-circular v-if="card.type==='circle'"
-                      :color="daysToNextSalaryColor(card.value)"
-                      :value="(card.value/30) * 100" :rotate="90" >
-                      <span style="color: black">{{card.value}}</span>
-                    </v-progress-circular>
-                    <div class="__card_value" v-bind:class="{ '__text-red': (card.value < 0), '__text-green': (card.value > 0) }"
-                      v-if="card.type==='value'">{{card.value}} {{ currency }}</div>
-                  </v-layout>
-                </v-flex>
+              <v-flex xs8 class="headline">{{ card.name }}</v-flex>
+              <v-flex xs4>
+                <v-layout align-end justify-end fill-height>
+                  <v-progress-circular
+                    v-if="card.type === 'circle'"
+                    :color="daysToNextSalaryColor(card.value)"
+                    :value="(card.value / 30) * 100"
+                    :rotate="90"
+                  >
+                    <span style="color: black">{{ card.value }}</span>
+                  </v-progress-circular>
+                  <div
+                    v-if="card.type === 'value'"
+                    class="__card_value"
+                    :class="{ '__text-red': card.value < 0, '__text-green': card.value > 0 }"
+                  >
+                    {{ card.value }} {{ currency }}
+                  </div>
+                </v-layout>
+              </v-flex>
             </v-layout>
           </v-card-title>
         </v-card>
@@ -28,7 +33,7 @@
     </v-layout>
     <v-layout row>
       <v-flex xs12>
-        <SpendingChart :data="filteredSpendingsList"  />
+        <SpendingChart :data="filteredSpendingsList" />
         <FixedExpenses />
         <ExtraIncomes />
         <Spendings />
@@ -53,10 +58,10 @@ import { db } from '@/services/DataProvider'
 import monthFunctions from '@/mixins/monthFunctions'
 
 export default {
-  mixins: [ voice, monthFunctions ],
-  name: 'home',
+  name: 'Home',
   components: { Spendings, FixedExpenses, EditDialog, SpendingChart, ExtraIncomes, Calendar },
-  data: function () {
+  mixins: [voice, monthFunctions],
+  data: function() {
     return {
       user: null,
       settings: null,
@@ -66,54 +71,60 @@ export default {
       testStore: this.$store.spendings
     }
   },
-  firestore: function () {
+  firestore: function() {
     return {
       user: db.collection('users').doc(firebase.auth().currentUser.uid),
       settings: db.collection('settings').doc(firebase.auth().currentUser.uid),
-      fixedExpensesList: db.collection('fixedExpenses').where('uid', '==', firebase.auth().currentUser.uid).orderBy('price'),
-      spendingsList: db.collection('spendings').where('uid', '==', firebase.auth().currentUser.uid).orderBy('date'),
-      extraIncomesList: db.collection('extraIncomes').where('uid', '==', firebase.auth().currentUser.uid).orderBy('date')
+      fixedExpensesList: db
+        .collection('fixedExpenses')
+        .where('uid', '==', firebase.auth().currentUser.uid)
+        .orderBy('price'),
+      spendingsList: db
+        .collection('spendings')
+        .where('uid', '==', firebase.auth().currentUser.uid)
+        .orderBy('date'),
+      extraIncomesList: db
+        .collection('extraIncomes')
+        .where('uid', '==', firebase.auth().currentUser.uid)
+        .orderBy('date')
     }
   },
-  mounted: function () {
-    console.log('HOME MOUNTER')
-  },
   computed: {
-    testStore2: function () {
+    testStore2: function() {
       console.log('This test store1: ', this.testStore)
       console.log('This test store2: ', this.$store.fixedExpenses)
       return this.$store.fixedExpenses
     },
-    currency: function () {
+    currency: function() {
       if (!this.settings) return
       return this.settings.currency
     },
-    totalMoney: function () {
+    totalMoney: function() {
       if (!this.settings) return
       return this.settings.salary + this.extraIncomes
     },
-    fixedExpenses: function () {
+    fixedExpenses: function() {
       let total = 0
       this.fixedExpensesList.forEach(expense => {
         total += parseInt(expense.price)
       })
       return total
     },
-    extraIncomes: function () {
+    extraIncomes: function() {
       let total = 0
       this.filteredExtraIncomesList.forEach(extraIncome => {
         total += parseInt(extraIncome.price)
       })
       return total
     },
-    daysInMonth: function () {
+    daysInMonth: function() {
       return new Date(this.year, this.month, 0).getDate()
     },
-    daysInLastMonth: function () {
+    daysInLastMonth: function() {
       const month = this.month === 0 ? 12 : this.month - 1
       return new Date(this.year, month, 0).getDate()
     },
-    spendings: function () {
+    spendings: function() {
       if (!this.filteredSpendingsList) return []
       let total = 0
 
@@ -122,27 +133,27 @@ export default {
       })
       return total * -1
     },
-    daysToNextSalary: function () {
+    daysToNextSalary: function() {
       if (this.day < this.salaryDay) {
         return this.salaryDay - this.day
       } else {
-        return (this.daysInMonth + this.salaryDay) - this.day
+        return this.daysInMonth + this.salaryDay - this.day
       }
     },
-    dailyIncome: function () {
+    dailyIncome: function() {
       return Math.round((this.totalMoney - this.fixedExpenses) / this.daysInMonth)
     },
-    dailySpendings: function () {
+    dailySpendings: function() {
       return Math.round(this.spendings / this.daysInMonth)
     },
-    moneyForToday: function () {
+    moneyForToday: function() {
       if (this.day < this.salaryDay) {
         return (this.daysInLastMonth - this.daysToNextSalary) * this.dailyIncome + this.spendings
       } else {
         return (this.day - this.salaryDay) * this.dailyIncome + this.spendings
       }
     },
-    cards: function () {
+    cards: function() {
       return [
         {
           id: 1,
@@ -171,8 +182,11 @@ export default {
       ]
     }
   },
+  mounted: function() {
+    console.log('HOME MOUNTER')
+  },
   methods: {
-    daysToNextSalaryColor: function (days) {
+    daysToNextSalaryColor: function(days) {
       if (days > 20) {
         return 'red'
       } else if (days > 10) {
@@ -181,7 +195,7 @@ export default {
         return 'green'
       }
     },
-    navigateTo: function (place) {
+    navigateTo: function(place) {
       console.log('PLace: ', place)
       console.log('Routes: ', this.$router.options.routes)
       if (this.$router.options.routes.includes('/' + place)) this.$router.push(place)
@@ -192,15 +206,15 @@ export default {
 
 <!-- Add 'scoped' attribute to limit CSS to this component only -->
 <style scoped>
-  .__card_value {
-    font-size: 1.3rem;
-  }
+.__card_value {
+  font-size: 1.3rem;
+}
 
-  .__text-red{
-    color: red;
-  }
+.__text-red {
+  color: red;
+}
 
-  .__text-green{
-    color: green;
-  }
+.__text-green {
+  color: green;
+}
 </style>

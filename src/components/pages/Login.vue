@@ -9,20 +9,43 @@
             </v-toolbar>
             <v-card-text>
               <v-form>
-                <v-text-field prepend-icon="person" v-model="email" name="login" label="Login" type="text"></v-text-field>
-                <v-text-field prepend-icon="lock" v-model="password" name="password" label="Password" id="password" type="password" />
+                <v-text-field
+                  v-model="email"
+                  prepend-icon="person"
+                  name="login"
+                  label="Login"
+                  type="text"
+                ></v-text-field>
+                <v-text-field
+                  id="password"
+                  v-model="password"
+                  prepend-icon="lock"
+                  name="password"
+                  label="Password"
+                  type="password"
+                />
               </v-form>
             </v-card-text>
-            <v-card-actions >
+            <v-card-actions>
               <v-layout justify-center px-2>
-                <v-btn color="primary" @click="signInWithEmail" block>Login</v-btn>
+                <v-btn color="primary" block @click="signInWithEmail">Login</v-btn>
               </v-layout>
             </v-card-actions>
             <div class="text-xs-center">
               <h2>Or sign in with:</h2>
               <v-layout px-2 justify-center>
-                <a @click="signInWithGoogle()" class="google_sign_in_button" @focus="setGoogleButtonState('focus')" href="#">
-                  <img ref="googleButton" :src="googleBtn.normal" @mouseover="setGoogleButtonState('hover')" @mouseout="setGoogleButtonState('normal')" />
+                <a
+                  class="google_sign_in_button"
+                  href="#"
+                  @click="signInWithGoogle()"
+                  @focus="setGoogleButtonState('focus')"
+                >
+                  <img
+                    ref="googleButton"
+                    :src="googleBtn.normal"
+                    @mouseover="setGoogleButtonState('hover')"
+                    @mouseout="setGoogleButtonState('normal')"
+                  />
                 </a>
               </v-layout>
             </div>
@@ -30,11 +53,7 @@
         </v-flex>
       </v-layout>
     </v-container>
-    <v-dialog
-        v-model="dialog"
-        persistent
-        width="200"
-      >
+    <v-dialog v-model="dialog" persistent width="200">
       <v-card color="primary" dark>
         <v-card-text class="text-xs-center">
           Logging in...<br /><br />
@@ -49,7 +68,7 @@
 import firebase from 'firebase'
 
 export default {
-  data: function () {
+  data: function() {
     return {
       dialog: false,
       email: '',
@@ -62,15 +81,13 @@ export default {
     }
   },
   methods: {
-    signInWithEmail: function () {
+    signInWithEmail: function() {
       firebase
         .auth()
         .signInWithEmailAndPassword(this.email, this.password)
-        .catch(err =>
-          alert(err)
-        )
+        .catch(err => alert(err))
     },
-    signInWithGoogle: function () {
+    signInWithGoogle: function() {
       this.dialog = true
       const provider = new firebase.auth.GoogleAuthProvider()
       firebase
@@ -82,29 +99,30 @@ export default {
           console.log('token: ', token)
           console.log('User: ', user)
         })
-        .catch(err =>
-          alert(err)
-        )
+        .catch(err => alert(err))
     },
-    setGoogleButtonState: function (state) {
+    setGoogleButtonState: function(state) {
       switch (state) {
-        case 'normal': this.$refs.googleButton.setAttribute('src', this.googleBtn.normal)
+        case 'normal':
+          this.$refs.googleButton.setAttribute('src', this.googleBtn.normal)
           break
-        case 'focus': this.$refs.googleButton.setAttribute('src', this.googleBtn.focus)
+        case 'focus':
+          this.$refs.googleButton.setAttribute('src', this.googleBtn.focus)
           break
-        case 'hover': this.$refs.googleButton.setAttribute('src', this.googleBtn.hover)
+        case 'hover':
+          this.$refs.googleButton.setAttribute('src', this.googleBtn.hover)
           break
-        default: console.log('unknown google button state')
+        default:
+          console.log('unknown google button state')
       }
     }
   }
-
 }
 </script>
 
 <!-- Add 'scoped' attribute to limit CSS to this component only -->
 <style scoped>
-  .google_sign_in_button img{
-    width: 100%;
-  }
+.google_sign_in_button img {
+  width: 100%;
+}
 </style>

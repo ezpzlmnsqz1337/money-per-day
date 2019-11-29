@@ -7,21 +7,10 @@
         </v-flex>
       </v-card-title>
       <v-sheet height="500">
-        <v-calendar
-          ref="calendar"
-          :start="start"
-          :end="end"
-          color="primary"
-        >
-
+        <v-calendar ref="calendar" :start="start" :end="end" color="primary">
           <template v-slot:day="{ date }">
             <template v-for="event in eventsMap[date]">
-              <v-menu
-                :key="event.title"
-                v-model="event.open"
-                full-width
-                offset-x
-              >
+              <v-menu :key="event.title" v-model="event.open" offset-x>
                 <template v-slot:activator="{ on }">
                   <div
                     v-if="!event.time"
@@ -31,15 +20,8 @@
                     v-html="event.title"
                   ></div>
                 </template>
-                <v-card
-                  color="grey lighten-4"
-                  min-width="350px"
-                  flat
-                >
-                  <v-toolbar
-                    color="primary"
-                    dark
-                  >
+                <v-card color="grey lighten-4" min-width="350px" flat>
+                  <v-toolbar color="primary" dark>
                     <v-btn icon>
                       <v-icon>edit</v-icon>
                     </v-btn>
@@ -56,10 +38,7 @@
                     <span v-html="event.details"></span>
                   </v-card-title>
                   <v-card-actions>
-                    <v-btn
-                      flat
-                      color="secondary"
-                    >
+                    <v-btn flat color="secondary">
                       Cancel
                     </v-btn>
                   </v-card-actions>
@@ -79,29 +58,35 @@ import { db } from '@/services/DataProvider'
 import monthFunctions from '@/mixins/monthFunctions'
 
 export default {
-  mixins: [ monthFunctions ],
-  data () {
+  mixins: [monthFunctions],
+  data() {
     return {
       spendingsList: [],
       extraIncomesList: []
     }
   },
-  firestore: function () {
+  firestore: function() {
     return {
-      spendingsList: db.collection('spendings').where('uid', '==', firebase.auth().currentUser.uid).orderBy('date'),
-      extraIncomesList: db.collection('extraIncomes').where('uid', '==', firebase.auth().currentUser.uid).orderBy('date')
+      spendingsList: db
+        .collection('spendings')
+        .where('uid', '==', firebase.auth().currentUser.uid)
+        .orderBy('date'),
+      extraIncomesList: db
+        .collection('extraIncomes')
+        .where('uid', '==', firebase.auth().currentUser.uid)
+        .orderBy('date')
     }
   },
   computed: {
-    start: function () {
+    start: function() {
       if (!this.startDate) return '2019-03-06'
       return this.startDate.toISOString().slice(0, 10)
     },
-    end: function () {
+    end: function() {
       if (!this.endDate) return '2019-04-06'
       return this.endDate.toISOString().slice(0, 10)
     },
-    events: function () {
+    events: function() {
       const events = []
       const event = {
         title: 'Vacation',
@@ -126,7 +111,7 @@ export default {
       return events
     },
     // convert the list of events into a map of lists keyed by date
-    eventsMap () {
+    eventsMap() {
       if (!this.events) return
       const map = {}
       this.events.forEach(e => (map[e.date] = map[e.date] || []).push(e))
@@ -138,18 +123,18 @@ export default {
 </script>
 
 <style scoped>
-  .my-event {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    border-radius: 2px;
-    background-color: #1867c0;
-    color: #ffffff;
-    border: 1px solid #1867c0;
-    width: 100%;
-    font-size: 12px;
-    padding: 3px;
-    cursor: pointer;
-    margin-bottom: 1px;
-  }
+.my-event {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-radius: 2px;
+  background-color: #1867c0;
+  color: #ffffff;
+  border: 1px solid #1867c0;
+  width: 100%;
+  font-size: 12px;
+  padding: 3px;
+  cursor: pointer;
+  margin-bottom: 1px;
+}
 </style>

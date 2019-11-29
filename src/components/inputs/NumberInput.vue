@@ -1,9 +1,5 @@
 <template>
-    <v-text-field
-        type="number"
-        v-model = model
-        :postfix="postCurrency"
-        :prefix="preCurrency"/>
+  <v-text-field type="number" v-model="model" :postfix="postCurrency" :prefix="preCurrency" />
 </template>
 
 <script>
@@ -12,6 +8,4 @@ export default {
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

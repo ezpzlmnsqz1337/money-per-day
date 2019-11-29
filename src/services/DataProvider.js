@@ -1,5 +1,5 @@
 import { firebase } from '@firebase/app'
-import '@firebase/firestore'
+import 'firebase/firestore'
 
 // Initialize Firebase
 const config = {
@@ -11,7 +11,7 @@ const config = {
   messagingSenderId: '550807968607'
 }
 
-var firebaseApp = firebase.initializeApp(config)
+const firebaseApp = firebase.initializeApp(config)
 
 firebase.auth().useDeviceLanguage()
 

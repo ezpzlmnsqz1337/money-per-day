@@ -1,14 +1,11 @@
 <template>
-  <v-container v-bind="{ ['grid-list-md']: true }" v-if="user">
+  <v-container v-if="user" v-bind="{ ['grid-list-md']: true }">
     <v-layout align-start justify-center row wrap>
       <v-flex xs12>
         <v-card raised hover>
           <v-container id="spendingsByName">
             <v-flex v-if="loader" xs12 class="text-xs-center">
-              <v-progress-circular
-                indeterminate
-                color="primary"
-              ></v-progress-circular>
+              <v-progress-circular indeterminate color="primary"></v-progress-circular>
             </v-flex>
           </v-container>
         </v-card>
@@ -17,10 +14,7 @@
         <v-card raised hover>
           <v-container id="spendingsByDate">
             <v-flex v-if="loader" xs12 class="text-xs-center">
-              <v-progress-circular
-                indeterminate
-                color="primary"
-              ></v-progress-circular>
+              <v-progress-circular indeterminate color="primary"></v-progress-circular>
             </v-flex>
           </v-container>
         </v-card>
@@ -29,10 +23,7 @@
         <v-card raised hover>
           <v-container id="salaryDivision">
             <v-flex v-if="loader" xs12 class="text-xs-center">
-              <v-progress-circular
-                indeterminate
-                color="primary"
-              ></v-progress-circular>
+              <v-progress-circular indeterminate color="primary"></v-progress-circular>
             </v-flex>
           </v-container>
         </v-card>
@@ -47,26 +38,12 @@ import firebase from 'firebase'
 import { db } from '@/services/DataProvider'
 import Charts from '@/services/Charts'
 import monthFunctions from '@/mixins/monthFunctions'
-import {
-  CHART_TYPE_BAR,
-  CHART_TYPE_HBAR,
-  CHART_TYPE_PIE
-} from '@/constants.js'
+import { CHART_TYPE_BAR, CHART_TYPE_HBAR, CHART_TYPE_PIE } from '@/constants.js'
 
 export default {
-  name: 'statistics',
-  mixins: [ monthFunctions ],
-  created: function () {
-  },
-  mounted: function () {
-    setTimeout(() => {
-      this.hideLoaders()
-      this.createSpendingsByNameChart()
-      this.createSpendingsByDateChart()
-      this.createSalaryDivisonChart()
-    }, 500)
-  },
-  data: function () {
+  name: 'Statistics',
+  mixins: [monthFunctions],
+  data: function() {
     return {
       user: null,
       settings: null,
@@ -77,22 +54,35 @@ export default {
       currencies: Object.keys(currencies)
     }
   },
-  firestore: function () {
+  computed: {},
+  created: function() {},
+  mounted: function() {
+    setTimeout(() => {
+      this.hideLoaders()
+      this.createSpendingsByNameChart()
+      this.createSpendingsByDateChart()
+      this.createSalaryDivisonChart()
+    }, 500)
+  },
+  firestore: function() {
     return {
       user: db.collection('users').doc(firebase.auth().currentUser.uid),
       settings: db.collection('settings').doc(firebase.auth().currentUser.uid),
-      fixedExpensesList: db.collection('fixedExpenses').where('uid', '==', firebase.auth().currentUser.uid).orderBy('price'),
-      spendingsList: db.collection('spendings').where('uid', '==', firebase.auth().currentUser.uid).orderBy('date')
+      fixedExpensesList: db
+        .collection('fixedExpenses')
+        .where('uid', '==', firebase.auth().currentUser.uid)
+        .orderBy('price'),
+      spendingsList: db
+        .collection('spendings')
+        .where('uid', '==', firebase.auth().currentUser.uid)
+        .orderBy('date')
     }
   },
-  computed: {
-
-  },
   methods: {
-    hideLoaders: function () {
+    hideLoaders: function() {
       this.loader = false
     },
-    createSpendingsByNameChart: function () {
+    createSpendingsByNameChart: function() {
       const data = []
       for (let i = 0; i < this.filteredSpendingsList.length; i++) {
         let exists = false
@@ -126,7 +116,7 @@ export default {
 
       Charts.createChart('spendingsByName', options)
     },
-    createSpendingsByDateChart: function () {
+    createSpendingsByDateChart: function() {
       const data = []
       for (let i = 0; i < this.filteredSpendingsList.length; i++) {
         let exists = false
@@ -161,9 +151,13 @@ export default {
 
       Charts.createChart('spendingsByDate', options)
     },
-    createSalaryDivisonChart: function () {
-      let spendings = this.filteredSpendingsList.map(s => s.price).reduce((prev, curr) => curr + prev, 0)
-      let fixedExpenses = this.fixedExpensesList.map(fe => fe.price).reduce((prev, curr) => curr + prev, 0)
+    createSalaryDivisonChart: function() {
+      let spendings = this.filteredSpendingsList
+        .map(s => s.price)
+        .reduce((prev, curr) => curr + prev, 0)
+      let fixedExpenses = this.fixedExpensesList
+        .map(fe => fe.price)
+        .reduce((prev, curr) => curr + prev, 0)
 
       let leftOver = this.settings.salary - spendings - fixedExpenses
 
@@ -210,16 +204,15 @@ export default {
     }
   }
 }
-
 </script>
 
 <!-- Add 'scoped' attribute to limit CSS to this component only -->
 <style scoped>
-  .__align-right{
-    text-align: right;
-  }
+.__align-right {
+  text-align: right;
+}
 
-  .__delete_button:hover{
-    color: #f44336!important;
-  }
+.__delete_button:hover {
+  color: #f44336 !important;
+}
 </style>

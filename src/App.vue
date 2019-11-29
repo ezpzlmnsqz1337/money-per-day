@@ -1,20 +1,11 @@
 <template>
   <v-app>
     <Drawer />
-    <Header/>
+    <Header />
     <v-content>
-      <v-snackbar
-        v-model="snackbar"
-        multi-line
-        top
-        :timeout="4000"
-      >
+      <v-snackbar v-model="snackbar" multi-line top :timeout="4000">
         {{ snackBarText }}
-        <v-btn
-          dark
-          flat
-          @click="snackbar = false"
-        >
+        <v-btn dark flat @click="snackbar = false">
           Close
         </v-btn>
       </v-snackbar>
@@ -30,20 +21,20 @@ import Drawer from './components/Drawer.vue'
 
 export default {
   name: 'App',
-  created: function () {
-    this.$root.$on('showSnackBar', text => {
-      console.log('YES')
-      this.snackBarText = text
-      this.snackbar = true
-    })
-  },
-  data: function () {
+  components: { Drawer, Header },
+  data: function() {
     return {
       snackbar: false,
       snackBarText: ''
     }
   },
-  components: { Drawer, Header }
+  created: function() {
+    this.$root.$on('showSnackBar', text => {
+      console.log('YES')
+      this.snackBarText = text
+      this.snackbar = true
+    })
+  }
 }
 </script>
 

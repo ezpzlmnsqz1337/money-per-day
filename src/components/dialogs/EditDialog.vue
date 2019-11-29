@@ -1,12 +1,9 @@
 <template>
-  <v-dialog v-model="dialog" width="500" v-if="item">
+  <v-dialog v-if="item" v-model="dialog" width="500">
     <slot slot="activator" name="activator"></slot>
 
     <v-card>
-      <v-card-title
-        class="headline grey lighten-2"
-        primary-title
-      >
+      <v-card-title class="headline grey lighten-2" primary-title>
         Edit item
       </v-card-title>
 
@@ -24,12 +21,7 @@
             </v-flex>
 
             <v-flex xs6>
-              <v-text-field
-                v-model="item.price"
-                label="Price"
-                :rules="priceRules"
-                required
-              />
+              <v-text-field v-model="item.price" label="Price" :rules="priceRules" required />
             </v-flex>
           </v-layout>
         </v-container>
@@ -56,14 +48,7 @@ import firebase from 'firebase'
 import { db } from '@/services/DataProvider'
 
 export default {
-  created: function () {
-    this.$root.$on('showEditDialog', item => {
-      console.log(item)
-      this.item = item
-      this.dialog = true
-    })
-  },
-  data: function () {
+  data: function() {
     return {
       dialog: false,
       item: null,
@@ -74,20 +59,30 @@ export default {
       ],
       priceRules: [
         v => !!v || 'Price is required',
-        v => /^([1-9]\d*(\.|,)\d*|0?(\.|,)\d*[1-9]\d*|[1-9]\d*)$/.test(v) || 'Price must be a number'
+        v =>
+          /^([1-9]\d*(\.|,)\d*|0?(\.|,)\d*[1-9]\d*|[1-9]\d*)$/.test(v) || 'Price must be a number'
       ],
       fixedExpensesList: []
     }
   },
-  firestore: function () {
+  created: function() {
+    this.$root.$on('showEditDialog', item => {
+      console.log(item)
+      this.item = item
+      this.dialog = true
+    })
+  },
+  firestore: function() {
     return {
       user: db.collection('users').doc(firebase.auth().currentUser.uid),
       settings: db.collection('settings').doc(firebase.auth().currentUser.uid),
-      fixedExpensesList: db.collection('fixedExpenses').where('uid', '==', firebase.auth().currentUser.uid)
+      fixedExpensesList: db
+        .collection('fixedExpenses')
+        .where('uid', '==', firebase.auth().currentUser.uid)
     }
   },
   methods: {
-    editItem: function () {
+    editItem: function() {
       if (this.itemEditFormValid) {
         if (this.item.type === ELEMENT_TYPE_FIXED_EXPENSE) {
           this.$store.editFixedExpense(this.item.id, this.item.name, this.item.price)
@@ -100,7 +95,7 @@ export default {
         this.dialog = false
       }
     },
-    deleteItem: function () {
+    deleteItem: function() {
       if (this.itemEditFormValid) {
         if (this.item.type === ELEMENT_TYPE_FIXED_EXPENSE) {
           this.$store.removeFixedExpense(this.item.id)
@@ -117,5 +112,4 @@ export default {
 }
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

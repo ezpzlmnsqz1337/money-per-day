@@ -7,7 +7,7 @@ class Charts {
    * @param {Number} destinationId - id of HTML element where to put the chart
    * @param {Object} options - title, type, values, xlabels
    */
-  createChart (destinationId, options) {
+  createChart(destinationId, options) {
     console.log('options: ', options)
     zingchart.render({
       width: '94%',
@@ -30,10 +30,12 @@ class Charts {
           visible: false,
           labels: options.xLabels
         },
-        series: [{
-          backgroundColor: '#039BE5',
-          values: options.values
-        }]
+        series: [
+          {
+            backgroundColor: '#039BE5',
+            values: options.values
+          }
+        ]
       }
     })
   }
@@ -44,7 +46,7 @@ class Charts {
    * @param {Number} destinationId - id of HTML element where to put the chart
    * @param {Object} options - title, type, series
    */
-  createPieChart (destinationId, options) {
+  createPieChart(destinationId, options) {
     console.log('options: ', options)
     zingchart.render({
       width: '94%',

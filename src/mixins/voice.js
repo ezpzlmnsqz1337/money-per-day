@@ -2,14 +2,20 @@ import annyang from 'annyang'
 import { SpeechKITT } from '../../node_modules/speechkitt/src/speechkitt'
 
 export default {
-  mounted: function () {
+  mounted: function() {
     if (annyang) {
       annyang.setLanguage('en')
       // Add our commands to annyang
       annyang.addCommands({
-        'hello': function () { this.showSnackbar('hello') },
-        'how are you': function () { this.showSnackbar('I fuck yo mom') },
-        'add *item for *price': function (item, price) { this.showSnackbar(`Adding item ${item} for ${price},- CZK`) }
+        hello: function() {
+          this.showSnackbar('hello')
+        },
+        'how are you': function() {
+          this.showSnackbar('I fuck yo mom')
+        },
+        'add *item for *price': function(item, price) {
+          this.showSnackbar(`Adding item ${item} for ${price},- CZK`)
+        }
       })
       SpeechKITT.displayRecognizedSentence(true)
 
@@ -24,7 +30,7 @@ export default {
     }
   },
   methods: {
-    showSnackbar: function (text) {
+    showSnackbar: function(text) {
       this.$root.$emit('showSnackBar', text)
     }
   }
