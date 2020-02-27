@@ -39,11 +39,7 @@
 </template>
 
 <script>
-import {
-  ELEMENT_TYPE_SPENDING,
-  ELEMENT_TYPE_FIXED_EXPENSE,
-  ELEMENT_TYPE_EXTRA_INCOME
-} from '@/constants.js'
+import ElementType from '@/constants/types/ElementType'
 import firebase from 'firebase'
 import { db } from '@/services/DataProvider'
 
@@ -84,11 +80,11 @@ export default {
   methods: {
     editItem: function() {
       if (this.itemEditFormValid) {
-        if (this.item.type === ELEMENT_TYPE_FIXED_EXPENSE) {
+        if (this.item.type === ElementType.FIXED_EXPENSE) {
           this.$store.editFixedExpense(this.item.id, this.item.name, this.item.price)
-        } else if (this.item.type === ELEMENT_TYPE_SPENDING) {
+        } else if (this.item.type === ElementType.SPENDING) {
           this.$store.editSpending(this.item.id, this.item.name, this.item.price)
-        } else if (this.item.type === ELEMENT_TYPE_EXTRA_INCOME) {
+        } else if (this.item.type === ElementType.EXTRA_INCOME) {
           this.$store.editExtraIncome(this.item.id, this.item.name, this.item.price)
         }
 
@@ -97,11 +93,11 @@ export default {
     },
     deleteItem: function() {
       if (this.itemEditFormValid) {
-        if (this.item.type === ELEMENT_TYPE_FIXED_EXPENSE) {
+        if (this.item.type === ElementType.FIXED_EXPENSE) {
           this.$store.removeFixedExpense(this.item.id)
-        } else if (this.item.type === ELEMENT_TYPE_SPENDING) {
+        } else if (this.item.type === ElementType.SPENDING) {
           this.$store.removeSpending(this.item.id)
-        } else if (this.item.type === ELEMENT_TYPE_EXTRA_INCOME) {
+        } else if (this.item.type === ElementType.EXTRA_INCOME) {
           this.$store.removeExtraIncome(this.item.id)
         }
 

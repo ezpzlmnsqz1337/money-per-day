@@ -1,8 +1,4 @@
-import {
-  ELEMENT_TYPE_FIXED_EXPENSE,
-  ELEMENT_TYPE_SPENDING,
-  ELEMENT_TYPE_EXTRA_INCOME
-} from '@/constants'
+import ElementType from '@/constants/types/ElementType'
 
 import firebase from 'firebase'
 import { db } from './DataProvider'
@@ -16,7 +12,7 @@ class Store {
   }
 
   async init(user) {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       // get user document
       const userRef = db.collection('users').doc(user.uid)
       userRef.get().then(doc => {
@@ -71,7 +67,7 @@ class Store {
   }
 
   async createOrSetUser(user) {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       const userRef = db.collection('users').doc(user.uid)
 
       userRef.get().then(async doc => {
@@ -136,7 +132,7 @@ class Store {
           name,
           price: parseFloat(price),
           currency,
-          type: ELEMENT_TYPE_FIXED_EXPENSE
+          type: ElementType.FIXED_EXPENSE
         })
       })
   }
@@ -169,7 +165,7 @@ class Store {
           price: parseFloat(price),
           currency,
           date: new Date(),
-          type: ELEMENT_TYPE_SPENDING
+          type: ElementType.SPENDING
         })
       })
   }
@@ -187,7 +183,7 @@ class Store {
         price: parseFloat(i.price),
         currency: i.currency,
         date: i.date,
-        type: ELEMENT_TYPE_SPENDING
+        type: ElementType.SPENDING
       })
     })
     // Commit the batch
@@ -224,7 +220,7 @@ class Store {
           price: parseFloat(price),
           currency,
           date: new Date(),
-          type: ELEMENT_TYPE_EXTRA_INCOME
+          type: ElementType.EXTRA_INCOME
         })
       })
   }
@@ -242,7 +238,7 @@ class Store {
         price: parseFloat(i.price),
         currency: i.currency,
         date: i.date,
-        type: ELEMENT_TYPE_EXTRA_INCOME
+        type: ElementType.EXTRA_INCOME
       })
     })
     // Commit the batch

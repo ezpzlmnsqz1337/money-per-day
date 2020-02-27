@@ -38,7 +38,7 @@ import firebase from 'firebase'
 import { db } from '@/services/DataProvider'
 import Charts from '@/services/Charts'
 import monthFunctions from '@/mixins/monthFunctions'
-import { CHART_TYPE_BAR, CHART_TYPE_HBAR, CHART_TYPE_PIE } from '@/constants.js'
+import ChartType from '@/constants/types/ChartType'
 
 export default {
   name: 'Statistics',
@@ -107,7 +107,7 @@ export default {
       const prices = data.map(d => d.price)
       const options = {
         title: 'Spendings by name',
-        type: CHART_TYPE_HBAR,
+        type: ChartType.HBAR,
         values: prices,
         valueAppend: this.settings.currency,
         tooltipAppend: this.settings.currency,
@@ -142,7 +142,7 @@ export default {
 
       const options = {
         title: 'Spendings by date',
-        type: CHART_TYPE_BAR,
+        type: ChartType.BAR,
         values: prices,
         valueAppend: this.settings.currency,
         tooltipAppend: this.settings.currency,
@@ -163,7 +163,7 @@ export default {
 
       const options = {
         title: 'Salary division',
-        type: CHART_TYPE_PIE,
+        type: ChartType.PIE,
         series: [
           {
             text: 'Spendings',

@@ -95,10 +95,7 @@ export default {
         open: false
       }
       events.push(event)
-      console.log('Events: ', events)
-      this.$store.spendings.then(snapshot => {
-        console.log('Store spend list: ', snapshot.docs)
-      })
+
       this.filteredSpendingsList.forEach(s => {
         const event = {
           title: `${s.name.substring(0, 6)}... + ${s.price}`,
