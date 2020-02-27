@@ -10,8 +10,6 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 12
-      name: run build
-      run: |
-        npm install
-        npm run build
+      - run: npm ci
+      - run: npm build
 
