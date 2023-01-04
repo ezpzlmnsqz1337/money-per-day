@@ -25,10 +25,10 @@
     "zingchart": "^2.8.8"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.12.1",
+    "@vue/cli-plugin-babel": "^5.0.8",
     "@vue/cli-plugin-eslint": "^3.12.1",
     "@vue/cli-plugin-pwa": "^3.12.1",
-    "@vue/cli-service": "^4.2.2",
+    "@vue/cli-service": "^5.0.8",
     "babel-eslint": "^10.1.0",
     "deepmerge": "^4.2.2",
     "eslint": "^5.16.0",
